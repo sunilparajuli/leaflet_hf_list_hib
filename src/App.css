@@ -35,6 +35,8 @@ html, body, #root {
   flex-direction: column;
   height: 100%;
   padding: 20px;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .ant-layout-content {
@@ -133,6 +135,7 @@ html, body, #root {
   flex-direction: column;
   flex: 1;
   margin-top: 10px;
+  min-height: 0;
 }
 
 .hospitals-scroll-list {
@@ -141,6 +144,7 @@ html, body, #root {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-height: 0;
 }
 
 .hospitals-scroll-list::-webkit-scrollbar {
@@ -395,4 +399,14 @@ html, body, #root {
   .ant-layout-sider-children {
     max-width: 100vw !important;
   }
+}
+
+/* Strict Sider collapse style to prevent overflow when width is 0 */
+.ant-layout-sider-collapsed {
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
