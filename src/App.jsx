@@ -6,7 +6,9 @@ import {
   GlobalOutlined,
   MedicineBoxOutlined,
   FullscreenOutlined,
-  CompassOutlined
+  CompassOutlined,
+  MenuOutlined,
+  CloseOutlined
 } from '@ant-design/icons';
 import { MapContainer, TileLayer, GeoJSON, Marker, Popup, useMap, ScaleControl, Circle } from 'react-leaflet';
 import L from 'leaflet';
@@ -137,10 +139,25 @@ export default function App() {
   const [searchVal, setSearchVal] = useState('');
   const [mouseCoords, setMouseCoords] = useState({ lat: null, lng: null });
 
+  // Responsive states
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [collapsed, setCollapsed] = useState(window.innerWidth <= 768);
+
   // Geolocation states
   const [userPosition, setUserPosition] = useState(null);
   const [userAccuracy, setUserAccuracy] = useState(null);
   const [gpsLoading, setGpsLoading] = useState(false);
+
+  // Window resize listener
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      setCollapsed(mobile);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Fetch boundaries and coordinates on startup
   useEffect(() => {
@@ -223,6 +240,10 @@ export default function App() {
     if (layer && mapRef.current) {
       mapRef.current.fitBounds(layer.getBounds(), { maxZoom: 11, padding: [40, 40] });
     }
+
+    if (isMobile) {
+      setCollapsed(true);
+    }
   }
 
   function selectHealthFacility(facility) {
@@ -233,6 +254,10 @@ export default function App() {
       district: facility.district,
       coords: [facility.lat, facility.lng]
     });
+
+    if (isMobile) {
+      setCollapsed(true);
+    }
   }
 
   // GPS geolocation lookup
@@ -349,6 +374,10 @@ export default function App() {
       }
       selectHealthFacility(item.meta);
     }
+
+    if (isMobile) {
+      setCollapsed(true);
+    }
   }
 
   function getMarkerByCoords(lat, lng) {
@@ -379,12 +408,22 @@ export default function App() {
       {/* ----------------------------------------------------
           SIDEBAR: HOSPITAL SEARCH & LIST
           ---------------------------------------------------- */}
-      <Sider width={380} theme="light" trigger={null}>
-        <div className="brand-container">
-          <Title className="brand-title" level={3}>
-            <MedicineBoxOutlined style={{ color: '#ef4444' }} /> Hospital Finder
-          </Title>
-          <p className="brand-subtitle">Health Insurance Board (HIB) Nepal</p>
+      <Sider width={380} collapsedWidth={0} collapsible collapsed={collapsed} theme="light" trigger={null}>
+        <div className="brand-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <Title className="brand-title" level={3} style={{ margin: 0 }}>
+              <MedicineBoxOutlined style={{ color: '#ef4444' }} /> Hospital Finder
+            </Title>
+            <p className="brand-subtitle">Health Insurance Board (HIB) Nepal</p>
+          </div>
+          {isMobile && (
+            <Button 
+              type="text" 
+              icon={<CloseOutlined />} 
+              onClick={() => setCollapsed(true)} 
+              style={{ fontSize: '1.1rem', color: '#595959' }}
+            />
+          )}
         </div>
 
         {/* Global Autocomplete */}
@@ -538,6 +577,14 @@ export default function App() {
             <Spin size="large" style={{ marginBottom: 12 }} />
             <Text strong style={{ color: '#1890ff' }}>Loading New official pointed boundaries of Nepal...</Text>
           </div>
+        )}
+        {isMobile && collapsed && (
+          <button 
+            className="sidebar-toggle-btn"
+            onClick={() => setCollapsed(false)}
+          >
+            <MenuOutlined />
+          </button>
         )}
         <MapContainer
           center={NEPAL_CENTER}
