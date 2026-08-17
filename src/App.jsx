@@ -153,11 +153,24 @@ export default function App() {
     const handleResize = () => {
       const mobile = window.innerWidth <= 768;
       setIsMobile(mobile);
-      setCollapsed(mobile);
+      if (mobile) {
+        setCollapsed(true);
+      } else {
+        setCollapsed(false);
+      }
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Invalidate map size when sidebar collapses/expands (vital for desktop width shifts)
+  useEffect(() => {
+    if (mapRef.current) {
+      setTimeout(() => {
+        mapRef.current.invalidateSize();
+      }, 250); // Match transition duration
+    }
+  }, [collapsed]);
 
   // Fetch boundaries and coordinates on startup
   useEffect(() => {
@@ -416,14 +429,12 @@ export default function App() {
             </Title>
             <p className="brand-subtitle">Health Insurance Board (HIB) Nepal</p>
           </div>
-          {isMobile && (
-            <Button 
-              type="text" 
-              icon={<CloseOutlined />} 
-              onClick={() => setCollapsed(true)} 
-              style={{ fontSize: '1.1rem', color: '#595959' }}
-            />
-          )}
+          <Button 
+            type="text" 
+            icon={<CloseOutlined />} 
+            onClick={() => setCollapsed(true)} 
+            style={{ fontSize: '1.1rem', color: '#595959' }}
+          />
         </div>
 
         {/* Global Autocomplete */}
@@ -578,7 +589,7 @@ export default function App() {
             <Text strong style={{ color: '#1890ff' }}>Loading New official pointed boundaries of Nepal...</Text>
           </div>
         )}
-        {isMobile && collapsed && (
+        {collapsed && (
           <button 
             className="sidebar-toggle-btn"
             onClick={() => setCollapsed(false)}
