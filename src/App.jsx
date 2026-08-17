@@ -161,8 +161,8 @@ export default function App() {
 
   // Fetch boundaries and coordinates on startup
   useEffect(() => {
-    // Fetch locally compiled high-resolution new official districts geojson
-    fetch('/nepal-districts-highres.geojson')
+    // Fetch locally compiled high-resolution new official districts geojson (with cache busting)
+    fetch('/nepal-districts-highres.geojson?v=2')
       .then(res => res.json())
       .then(data => {
         setDistrictGeoJson(data);
@@ -173,8 +173,8 @@ export default function App() {
         message.error("Failed to load official district boundaries.");
       });
 
-    // Fetch hospital coordinates list
-    fetch('/nepal-health-facilities.json')
+    // Fetch hospital coordinates list (with cache busting)
+    fetch('/nepal-health-facilities.json?v=2')
       .then(res => res.json())
       .then(data => setHealthFacilities(data))
       .catch(err => message.error("Failed to load hospital listings."));
