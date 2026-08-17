@@ -28,7 +28,7 @@
     "district": "Bhojpur"
   },
   {
-    "name": "Dandabazar phc",
+    "name": "Dandabazar PHC",
     "lat": 26.8789048,
     "lng": 87.391922,
     "type": "Government",
@@ -42,14 +42,14 @@
     "district": "Dhankuta"
   },
   {
-    "name": "JITPUR PHC",
+    "name": "Jitpur PHC",
     "lat": 27.1138063,
     "lng": 87.31873495,
     "type": "Government",
     "district": "Dhankuta"
   },
   {
-    "name": "CHULACHULI HOSPITAL, ILAM",
+    "name": "Chulachuli Hospital, Ilam",
     "lat": 26.7077854,
     "lng": 87.75562,
     "type": "Government",
@@ -70,14 +70,14 @@
     "district": "Ilam"
   },
   {
-    "name": "MAIJOGMAI ADHARBHUT HOSPITAL",
+    "name": "Maijogmai Adharbhut Hospital",
     "lat": 26.9426751,
     "lng": 88.0365851,
     "type": "Government",
     "district": "Ilam"
   },
   {
-    "name": "Mangalbare PHCC",
+    "name": "Mangalbare Phcc",
     "lat": 26.9385742,
     "lng": 87.8355431,
     "type": "Government",
@@ -147,7 +147,7 @@
     "district": "Jhapa"
   },
   {
-    "name": "GAURADAHA MUNCIPALITY HOSPITAL",
+    "name": "Gauradaha Muncipality Hospital",
     "lat": 26.5665,
     "lng": 87.7244,
     "type": "Government",
@@ -161,21 +161,21 @@
     "district": "Jhapa"
   },
   {
-    "name": "HALDIBARI ADHARBHUT HOSPITAL",
+    "name": "Haldibari Adharbhut Hospital",
     "lat": 26.7909338,
     "lng": 87.6451613,
     "type": "Government",
     "district": "Jhapa"
   },
   {
-    "name": "KAMAL NAGAR HOSPITAL",
+    "name": "Kamal Nagar Hospital",
     "lat": 26.48447,
     "lng": 87.85614,
     "type": "Government",
     "district": "Jhapa"
   },
   {
-    "name": "KANKAI NAGAR HOSPITAL",
+    "name": "Kankai Nagar Hospital",
     "lat": 26.58333,
     "lng": 87.91667,
     "type": "Government",
@@ -231,14 +231,14 @@
     "district": "Khotang"
   },
   {
-    "name": "BAHUNI PHC",
+    "name": "Bahuni PHC",
     "lat": 26.58557569,
     "lng": 87.46861175,
     "type": "Government",
     "district": "Morang"
   },
   {
-    "name": "BELBARI NAGAR HOSPITAL",
+    "name": "Belbari Nagar Hospital",
     "lat": 26.64141004,
     "lng": 87.42224265,
     "type": "Government",
@@ -252,21 +252,21 @@
     "district": "Morang"
   },
   {
-    "name": "JHORAHAT PHC",
+    "name": "Jhorahat PHC",
     "lat": 26.53829294,
     "lng": 87.33575438,
     "type": "Government",
     "district": "Morang"
   },
   {
-    "name": "JHURKIYA PHC",
+    "name": "Jhurkiya PHC",
     "lat": 26.43374211,
     "lng": 87.6354835,
     "type": "Government",
     "district": "Morang"
   },
   {
-    "name": "KANEPOKHARI HOSPITAL",
+    "name": "Kanepokhari Hospital",
     "lat": 26.59020671,
     "lng": 87.5062629,
     "type": "Government",
@@ -287,28 +287,28 @@
     "district": "Morang"
   },
   {
-    "name": "LETANG HOSPITAL",
+    "name": "Letang Hospital",
     "lat": 26.73398538,
     "lng": 87.50050277,
     "type": "Government",
     "district": "Morang"
   },
   {
-    "name": "MADAN BHANDARI ASPATAL TATHA TRAUMA CENTER",
+    "name": "Madan Bhandari Aspatal Tatha Trauma Center",
     "lat": 26.6657218,
     "lng": 87.6028167,
     "type": "Government",
     "district": "Morang"
   },
   {
-    "name": "MADHUMALLA HOSPITAL",
+    "name": "Madhumalla Hospital",
     "lat": 26.73135739,
     "lng": 87.66383058,
     "type": "Government",
     "district": "Morang"
   },
   {
-    "name": "PATHRI SANISCHARAE MUNICIPALITY HOSPITAL",
+    "name": "Pathri Sanischarae Municipality Hospital",
     "lat": 26.64385166,
     "lng": 87.56757819,
     "type": "Government",
@@ -322,21 +322,21 @@
     "district": "Morang"
   },
   {
-    "name": "RANGELI HOSPITAL",
+    "name": "Rangeli Hospital",
     "lat": 26.46579,
     "lng": 87.49042,
     "type": "Government",
     "district": "Morang"
   },
   {
-    "name": "RANI PHC",
+    "name": "Rani PHC",
     "lat": 26.41617481,
     "lng": 87.27106617,
     "type": "Government",
     "district": "Morang"
   },
   {
-    "name": "SUNDAR HARAICHA NAGAR HOSPITAL",
+    "name": "Sundar Haraicha Nagar Hospital",
     "lat": 26.61217709,
     "lng": 87.36977043,
     "type": "Government",
@@ -350,7 +350,7 @@
     "district": "Okhaldunga"
   },
   {
-    "name": "RANIBAN PHC",
+    "name": "Raniban PHC",
     "lat": 27.34622296,
     "lng": 86.26665034,
     "type": "Government",
@@ -364,7 +364,7 @@
     "district": "Panchthar"
   },
   {
-    "name": "GOPETAR PHC",
+    "name": "Gopetar PHC",
     "lat": 27.23678371,
     "lng": 87.82605462,
     "type": "Government",
@@ -378,7 +378,7 @@
     "district": "Panchthar"
   },
   {
-    "name": "Chainpur Phc",
+    "name": "Chainpur PHC",
     "lat": 27.28241441,
     "lng": 87.31511086,
     "type": "Government",
@@ -399,21 +399,21 @@
     "district": "Sankhuwasabha"
   },
   {
-    "name": "Num Phc",
+    "name": "Num PHC",
     "lat": 27.55302148,
     "lng": 87.28438531,
     "type": "Government",
     "district": "Sankhuwasabha"
   },
   {
-    "name": "Tamku Phc",
+    "name": "Tamku PHC",
     "lat": 27.48375176,
     "lng": 87.10101637,
     "type": "Government",
     "district": "Sankhuwasabha"
   },
   {
-    "name": "Wana Phc",
+    "name": "Wana PHC",
     "lat": 27.3370415,
     "lng": 87.29254425,
     "type": "Government",
@@ -427,7 +427,7 @@
     "district": "Solukhumbu"
   },
   {
-    "name": "MAHAKULUNG PRATHAMIK HOSPITAL",
+    "name": "Mahakulung Prathamik Hospital",
     "lat": 27.51540819,
     "lng": 86.82711924,
     "type": "Government",
@@ -462,7 +462,7 @@
     "district": "Sunsari"
   },
   {
-    "name": "BP Koirala Institute of Health Science,Daran",
+    "name": "BP Koirala Institute Of Health Science,daran",
     "lat": 26.8087873,
     "lng": 87.2641492,
     "type": "Government",
@@ -476,14 +476,14 @@
     "district": "Sunsari"
   },
   {
-    "name": "Harinagara Phc",
+    "name": "Harinagara PHC",
     "lat": 26.50383363,
     "lng": 87.12043075,
     "type": "Government",
     "district": "Sunsari"
   },
   {
-    "name": "Inaruwa district hospital",
+    "name": "Inaruwa District Hospital",
     "lat": 26.6006117,
     "lng": 87.1509093,
     "type": "Government",
@@ -497,42 +497,42 @@
     "district": "Sunsari"
   },
   {
-    "name": "Maduban Phc",
+    "name": "Maduban PHC",
     "lat": 26.64084463,
     "lng": 87.06853156,
     "type": "Government",
     "district": "Sunsari"
   },
   {
-    "name": "NAGAR ADHABHUT HOSPITAL, DUHABI",
+    "name": "Nagar Adhabhut Hospital, Duhabi",
     "lat": 26.54697646,
     "lng": 87.24368486,
     "type": "Government",
     "district": "Sunsari"
   },
   {
-    "name": "DISTRICT HOSPITAL TAPLEJUNG",
+    "name": "District Hospital Taplejung",
     "lat": 27.35867,
     "lng": 87.67331,
     "type": "Government",
     "district": "Taplejung"
   },
   {
-    "name": "TAPETHOK PRATHAMIK ASPATAL",
+    "name": "Tapethok Prathamik Aspatal",
     "lat": 27.49154315,
     "lng": 87.77235701,
     "type": "Government",
     "district": "Taplejung"
   },
   {
-    "name": "TELLOK PHC",
+    "name": "Tellok PHC",
     "lat": 27.36185625,
     "lng": 87.84807064,
     "type": "Government",
     "district": "Taplejung"
   },
   {
-    "name": "Basantpur Phc",
+    "name": "Basantpur PHC",
     "lat": 27.13569545,
     "lng": 87.4089043,
     "type": "Government",
@@ -560,7 +560,7 @@
     "district": "Terhathum"
   },
   {
-    "name": "SAKRANTI PHC",
+    "name": "Sakranti PHC",
     "lat": 27.2128385,
     "lng": 87.62895295,
     "type": "Government",
@@ -595,14 +595,14 @@
     "district": "Udayapur"
   },
   {
-    "name": "Saptakoshi Neuro Hospital Pvt. Ltd.",
+    "name": "Saptakoshi Neuro Hospital PVT. LTD.",
     "lat": 26.60564647,
     "lng": 87.12273778,
     "type": "Private",
     "district": "Sunsari"
   },
   {
-    "name": "Nava Dristi Eye Hospital Pvt. Ltd",
+    "name": "Nava Dristi Eye Hospital PVT. Ltd",
     "lat": 26.66049717,
     "lng": 87.28417693,
     "type": "Private",
@@ -637,14 +637,14 @@
     "district": "Morang"
   },
   {
-    "name": "Araniko Hospital Pvt. Ltd.",
+    "name": "Araniko Hospital PVT. LTD.",
     "lat": 26.66430895,
     "lng": 87.63176523,
     "type": "Private",
     "district": "Morang"
   },
   {
-    "name": "Nobel Medical College Teaching Hospital Pvt. Ltd",
+    "name": "Nobel Medical College Teaching Hospital PVT. Ltd",
     "lat": 26.48964836,
     "lng": 87.2702582,
     "type": "Private",
@@ -658,7 +658,7 @@
     "district": "Morang"
   },
   {
-    "name": "Aims Hospital & Cancer Center Pvt. Ltd",
+    "name": "Aims Hospital & Cancer Center PVT. Ltd",
     "lat": 26.45829123,
     "lng": 87.28389981,
     "type": "Private",
@@ -672,21 +672,21 @@
     "district": "Khotang"
   },
   {
-    "name": "OM SAI PATHIBHARA HOSPITAL PVT.LTD",
+    "name": "Om Sai Pathibhara Hospital PVT.LTD",
     "lat": 26.55907377,
     "lng": 88.0800846,
     "type": "Private",
     "district": "Jhapa"
   },
   {
-    "name": "OM Mechi Hospital Pvt.ltd",
+    "name": "Om Mechi Hospital PVT.LTD",
     "lat": 26.65979647,
     "lng": 87.70348604,
     "type": "Private",
     "district": "Jhapa"
   },
   {
-    "name": "Nims National Hospital Pvt. Ltd",
+    "name": "Nims National Hospital PVT. Ltd",
     "lat": 26.66016434,
     "lng": 87.68707376,
     "type": "Private",
@@ -707,35 +707,35 @@
     "district": "Jhapa"
   },
   {
-    "name": "Kankai Hospital P .Ltd",
+    "name": "Kankai Hospital P .LTD",
     "lat": 26.62944252,
     "lng": 87.9826374,
     "type": "Private",
     "district": "Jhapa"
   },
   {
-    "name": "Damak Hospital & Research Center Pvt.Ltd.",
+    "name": "Damak Hospital & Research Center PVT.LTD.",
     "lat": 26.65836217,
     "lng": 87.69963357,
     "type": "Private",
     "district": "Jhapa"
   },
   {
-    "name": "Birtajyoti Eye Care Pvt.Ltd.",
+    "name": "Birtajyoti Eye Care PVT.LTD.",
     "lat": 26.66206435,
     "lng": 87.69738755,
     "type": "Private/Eye",
     "district": "Jhapa"
   },
   {
-    "name": "Birtamod Eye Hospital P. LTD",
+    "name": "Birtamod Eye Hospital P. Ltd",
     "lat": 26.64152305,
     "lng": 87.98236915,
     "type": "Private/Eye",
     "district": "Jhapa"
   },
   {
-    "name": "B&C Medical College Teaching Hospital & Research Centre Pvt. Ltd.",
+    "name": "B&c Medical College Teaching Hospital & Research Centre PVT. LTD.",
     "lat": 26.64515235,
     "lng": 87.99741153,
     "type": "Private",
@@ -777,42 +777,42 @@
     "district": "Solukhumbu"
   },
   {
-    "name": "GANJ BHAWANIPUR PHC",
+    "name": "Ganj Bhawanipur PHC",
     "lat": 27.02133183,
     "lng": 85.06124505,
     "type": "Government",
     "district": "Bara"
   },
   {
-    "name": "HARDIYA PHC",
+    "name": "Hardiya PHC",
     "lat": 26.93871606,
     "lng": 85.03721143,
     "type": "Government",
     "district": "Bara"
   },
   {
-    "name": "KALAIYA DISTRICT HOSPITAL",
+    "name": "Kalaiya District Hospital",
     "lat": 27.02748264,
     "lng": 85.00238696,
     "type": "Government",
     "district": "Bara"
   },
   {
-    "name": "KOLHABI PHC",
+    "name": "Kolhabi PHC",
     "lat": 27.07349426,
     "lng": 85.17398935,
     "type": "Government",
     "district": "Bara"
   },
   {
-    "name": "NIJGADH PHC",
+    "name": "Nijgadh PHC",
     "lat": 27.17138812,
     "lng": 85.19324549,
     "type": "Government",
     "district": "Bara"
   },
   {
-    "name": "PIPARA SIMARA PHC",
+    "name": "Pipara Simara PHC",
     "lat": 27.16444073,
     "lng": 84.97468603,
     "type": "Government",
@@ -861,7 +861,7 @@
     "district": "Mahottari"
   },
   {
-    "name": "Gausala Phc",
+    "name": "Gausala PHC",
     "lat": 26.9193812,
     "lng": 85.78623268,
     "type": "Government",
@@ -875,49 +875,49 @@
     "district": "Mahottari"
   },
   {
-    "name": "Loharpatti Phc",
+    "name": "Loharpatti PHC",
     "lat": 26.8006805,
     "lng": 85.85377248,
     "type": "Government",
     "district": "Mahottari"
   },
   {
-    "name": "Pipara Phc",
+    "name": "Pipara PHC",
     "lat": 26.68338082,
     "lng": 85.85849524,
     "type": "Government",
     "district": "Mahottari"
   },
   {
-    "name": "Ram Gopalpur Phc",
+    "name": "Ram Gopalpur PHC",
     "lat": 26.82048457,
     "lng": 85.79739665,
     "type": "Government",
     "district": "Mahottari"
   },
   {
-    "name": "Samsi Phc",
+    "name": "Samsi PHC",
     "lat": 26.81275052,
     "lng": 85.73540752,
     "type": "Government",
     "district": "Mahottari"
   },
   {
-    "name": "Bagahi Phc",
+    "name": "Bagahi PHC",
     "lat": 27.09189634,
     "lng": 84.89207419,
     "type": "Government",
     "district": "Parsa"
   },
   {
-    "name": "Bageshwori Phc",
+    "name": "Bageshwori PHC",
     "lat": 27.12153384,
     "lng": 84.84200189,
     "type": "Government",
     "district": "Parsa"
   },
   {
-    "name": "Bhikhampur Phc",
+    "name": "Bhikhampur PHC",
     "lat": 27.11674258,
     "lng": 84.70635217,
     "type": "Government",
@@ -952,21 +952,21 @@
     "district": "Rautahat"
   },
   {
-    "name": "Ganga Pipara Phc",
+    "name": "Ganga Pipara PHC",
     "lat": 26.84621913,
     "lng": 85.3289902,
     "type": "Government",
     "district": "Rautahat"
   },
   {
-    "name": "Katahariya Phc",
+    "name": "Katahariya PHC",
     "lat": 26.98289752,
     "lng": 85.24040144,
     "type": "Government",
     "district": "Rautahat"
   },
   {
-    "name": "Pataura Phc",
+    "name": "Pataura PHC",
     "lat": 26.92392532,
     "lng": 85.21178183,
     "type": "Government",
@@ -980,98 +980,98 @@
     "district": "Rautahat"
   },
   {
-    "name": "BHARDAH HOSPITAL",
+    "name": "Bhardah Hospital",
     "lat": 26.54836852,
     "lng": 86.88468467,
     "type": "Government",
     "district": "Saptari"
   },
   {
-    "name": "GAJENDRA NARAYAN SINGH HOSPITAL",
+    "name": "Gajendra Narayan Singh Hospital",
     "lat": 26.53596,
     "lng": 86.74995,
     "type": "Government",
     "district": "Saptari"
   },
   {
-    "name": "KADARBONA PRIMARY HEALTH CENTRE",
+    "name": "Kadarbona Primary Health Centre",
     "lat": 26.66816815,
     "lng": 86.55891709,
     "type": "Government",
     "district": "Saptari"
   },
   {
-    "name": "KALYANPUR PRIMARY HEALTH CENTRE",
+    "name": "Kalyanpur Primary Health Centre",
     "lat": 26.64635601,
     "lng": 86.62395003,
     "type": "Government",
     "district": "Saptari"
   },
   {
-    "name": "KANCHANPUR PRIMARY HEALTH CENTRE",
+    "name": "Kanchanpur Primary Health Centre",
     "lat": 26.64497881,
     "lng": 86.91108003,
     "type": "Government",
     "district": "Saptari"
   },
   {
-    "name": "TOPA PRIMARY HEALTH CENTRE",
+    "name": "Topa Primary Health Centre",
     "lat": 26.5206573,
     "lng": 86.79543257,
     "type": "Government",
     "district": "Saptari"
   },
   {
-    "name": "ACHALGADH PHC",
+    "name": "Achalgadh PHC",
     "lat": 26.79951402,
     "lng": 85.3660849,
     "type": "Government",
     "district": "Sarlahi"
   },
   {
-    "name": "BARAHATHAWA PHC",
+    "name": "Barahathawa PHC",
     "lat": 27.00360106,
     "lng": 85.45982703,
     "type": "Government",
     "district": "Sarlahi"
   },
   {
-    "name": "HARIPUR PHC",
+    "name": "Haripur PHC",
     "lat": 27.01517143,
     "lng": 85.56906272,
     "type": "Government",
     "district": "Sarlahi"
   },
   {
-    "name": "JAMUNIYA PHC",
+    "name": "Jamuniya PHC",
     "lat": 26.9408126,
     "lng": 85.51744656,
     "type": "Government",
     "district": "Sarlahi"
   },
   {
-    "name": "LALBANDI PHC",
+    "name": "Lalbandi PHC",
     "lat": 27.05449977,
     "lng": 85.62709066,
     "type": "Government",
     "district": "Sarlahi"
   },
   {
-    "name": "MALANGAWA HOSPITAL",
+    "name": "Malangawa Hospital",
     "lat": 26.83722,
     "lng": 85.54691,
     "type": "Government",
     "district": "Sarlahi"
   },
   {
-    "name": "Auarahi Phc",
+    "name": "Auarahi PHC",
     "lat": 26.63032173,
     "lng": 86.30177372,
     "type": "Government",
     "district": "Siraha"
   },
   {
-    "name": "Bhagwanpur Phc",
+    "name": "Bhagwanpur PHC",
     "lat": 26.59737329,
     "lng": 86.48388188,
     "type": "Government",
@@ -1085,7 +1085,7 @@
     "district": "Siraha"
   },
   {
-    "name": "Nawarajpur Phc",
+    "name": "Nawarajpur PHC",
     "lat": 26.60779081,
     "lng": 86.41472256,
     "type": "Government",
@@ -1106,7 +1106,7 @@
     "district": "Siraha"
   },
   {
-    "name": "CHHINNAMASTA EDUCATIONAL ACADEMY AND MEDICAL COLLEGE Pvt. Ltd",
+    "name": "Chhinnamasta Educational Academy And Medical College PVT. Ltd",
     "lat": 26.53381671,
     "lng": 86.74515527,
     "type": "Private",
@@ -1127,14 +1127,14 @@
     "district": "Parsa"
   },
   {
-    "name": "National Medical College Pvt. Ltd.",
+    "name": "National Medical College PVT. LTD.",
     "lat": 27.01186083,
     "lng": 84.89578078,
     "type": "Private",
     "district": "Parsa"
   },
   {
-    "name": "Birgunj Drishti Eye Care Centre Pvt. Ltd",
+    "name": "Birgunj Drishti Eye Care Centre PVT. Ltd",
     "lat": 27.03182757,
     "lng": 84.88900128,
     "type": "Private",
@@ -1148,14 +1148,14 @@
     "district": "Dhanusa"
   },
   {
-    "name": "Ram Janaki Health Foundation/Janaki Medical College",
+    "name": "Ram Janaki Health Foundation/janaki Medical College",
     "lat": 26.81506029,
     "lng": 85.95314322,
     "type": "Private",
     "district": "Dhanusa"
   },
   {
-    "name": "Janaki eye Hospital",
+    "name": "Janaki Eye Hospital",
     "lat": 26.73816754,
     "lng": 85.91729142,
     "type": "Community",
@@ -1169,7 +1169,7 @@
     "district": "Parsa"
   },
   {
-    "name": "Sagarmatha Chaudhary Eye Hospital, NNJS",
+    "name": "Sagarmatha Chaudhary Eye Hospital, Nnjs",
     "lat": 26.71013997,
     "lng": 86.49282489,
     "type": "Community/ Eye",
@@ -1204,7 +1204,7 @@
     "district": "Bhaktapur"
   },
   {
-    "name": "DADHIKOT PHC, DADHIKOT",
+    "name": "Dadhikot PHC, Dadhikot",
     "lat": 27.65647185,
     "lng": 85.39223808,
     "type": "Government",
@@ -1225,14 +1225,14 @@
     "district": "Bhaktapur"
   },
   {
-    "name": "NEPAL KORIA FRIENDSHIP MUNICIPALITY HOSPITAL",
+    "name": "Nepal Koria Friendship Municipality Hospital",
     "lat": 27.6786156,
     "lng": 85.38377104,
     "type": "Government",
     "district": "Bhaktapur"
   },
   {
-    "name": "Suryabinayak Nagar Aspatal (Jagati)",
+    "name": "Suryabinayak Nagar Aspatal (jagati)",
     "lat": 27.66545964,
     "lng": 85.43528362,
     "type": "Government",
@@ -1274,7 +1274,7 @@
     "district": "Chitwan"
   },
   {
-    "name": "Kalika Nagar Hospital,Jutpani",
+    "name": "Kalika Nagar Hospital,jutpani",
     "lat": 27.67258364,
     "lng": 84.52906412,
     "type": "Government",
@@ -1316,7 +1316,7 @@
     "district": "Dhading"
   },
   {
-    "name": "GAJURI PHC",
+    "name": "Gajuri PHC",
     "lat": 27.80662964,
     "lng": 84.87987859,
     "type": "Government",
@@ -1330,28 +1330,28 @@
     "district": "Dhading"
   },
   {
-    "name": "SALYANTAR PHC",
+    "name": "Salyantar PHC",
     "lat": 28.02238143,
     "lng": 84.82537915,
     "type": "Government",
     "district": "Dhading"
   },
   {
-    "name": "BAITESHWOR HOSPITAL",
+    "name": "Baiteshwor Hospital",
     "lat": 27.64509114,
     "lng": 86.13083612,
     "type": "Government",
     "district": "Dolakha"
   },
   {
-    "name": "JIRI HOSPITAL",
+    "name": "Jiri Hospital",
     "lat": 27.6336,
     "lng": 86.23199,
     "type": "Government",
     "district": "Dolakha"
   },
   {
-    "name": "PASHUPATI CHAULAGAI SMRITI HOSPITAL",
+    "name": "Pashupati Chaulagai Smriti Hospital",
     "lat": 27.671742,
     "lng": 86.049542,
     "type": "Government",
@@ -1365,7 +1365,7 @@
     "district": "Dolakha"
   },
   {
-    "name": "SURI PHC",
+    "name": "Suri PHC",
     "lat": 27.73217726,
     "lng": 86.22957494,
     "type": "Government",
@@ -1386,21 +1386,21 @@
     "district": "Kathmandu"
   },
   {
-    "name": "B.P. Koirala Lions Center for Ophthalmic Studies",
+    "name": "B.P. Koirala Lions Center For Ophthalmic Studies",
     "lat": 27.73564663,
     "lng": 85.33139219,
     "type": "Government",
     "district": "Kathmandu"
   },
   {
-    "name": "National Academy of Medical Sciences, Bir Hospital",
+    "name": "National Academy Of Medical Sciences, Bir Hospital",
     "lat": 27.70538,
     "lng": 85.31315,
     "type": "Government",
     "district": "Kathmandu"
   },
   {
-    "name": "BISHNUDEVI HOSPITAL",
+    "name": "Bishnudevi Hospital",
     "lat": 27.680488,
     "lng": 85.276405,
     "type": "Government",
@@ -1421,7 +1421,7 @@
     "district": "Kathmandu"
   },
   {
-    "name": "GOKARNESWOR NAGAR HOSPITAL",
+    "name": "Gokarneswor Nagar Hospital",
     "lat": 27.739408,
     "lng": 85.387454,
     "type": "Government",
@@ -1442,21 +1442,21 @@
     "district": "Kathmandu"
   },
   {
-    "name": "Manmohan Cardiothoracic Vascular and Transplant Center",
+    "name": "Manmohan Cardiothoracic Vascular And Transplant Center",
     "lat": 27.73583762,
     "lng": 85.3287826,
     "type": "Government",
     "district": "Kathmandu"
   },
   {
-    "name": "Paropakar Maternity and Women's Hospital",
+    "name": "Paropakar Maternity And Women's Hospital",
     "lat": 27.6896,
     "lng": 85.31939,
     "type": "Government",
     "district": "Kathmandu"
   },
   {
-    "name": "MULPANI NAGAR HOSPITAL",
+    "name": "Mulpani Nagar Hospital",
     "lat": 27.71434439,
     "lng": 85.39318084,
     "type": "Government",
@@ -1547,14 +1547,14 @@
     "district": "Kathmandu"
   },
   {
-    "name": "Dhulikhel Phc",
+    "name": "Dhulikhel PHC",
     "lat": 27.61492967,
     "lng": 85.56375742,
     "type": "Government",
     "district": "Kavrepalanchok"
   },
   {
-    "name": "Khopasi Phc",
+    "name": "Khopasi PHC",
     "lat": 27.56450411,
     "lng": 85.53513615,
     "type": "Government",
@@ -1568,14 +1568,14 @@
     "district": "Kavrepalanchok"
   },
   {
-    "name": "Panchkhal Phc",
+    "name": "Panchkhal PHC",
     "lat": 27.63689493,
     "lng": 85.60760619,
     "type": "Government",
     "district": "Kavrepalanchok"
   },
   {
-    "name": "Sunthan Phc",
+    "name": "Sunthan PHC",
     "lat": 27.58339484,
     "lng": 85.52968573,
     "type": "Government",
@@ -1589,7 +1589,7 @@
     "district": "Lalitpur"
   },
   {
-    "name": "BAJRABARAHI CHAPAGAUN HOSPITAL",
+    "name": "Bajrabarahi Chapagaun Hospital",
     "lat": 27.59947,
     "lng": 85.31623,
     "type": "Government",
@@ -1603,7 +1603,7 @@
     "district": "Lalitpur"
   },
   {
-    "name": "LELE PHC",
+    "name": "Lele PHC",
     "lat": 27.56801462,
     "lng": 85.34185203,
     "type": "Government",
@@ -1631,14 +1631,14 @@
     "district": "Lalitpur"
   },
   {
-    "name": "Patan Academy of Health Science, Patan Hospital",
+    "name": "Patan Academy Of Health Science, Patan Hospital",
     "lat": 27.66865,
     "lng": 85.32077,
     "type": "Government",
     "district": "Lalitpur"
   },
   {
-    "name": "Yala Swasthya kendre",
+    "name": "Yala Swasthya Kendre",
     "lat": 27.67684995,
     "lng": 85.31911942,
     "type": "Government",
@@ -1652,14 +1652,14 @@
     "district": "Lalitpur"
   },
   {
-    "name": "BAKAIYA ADHARBHUT HOSPITAL",
+    "name": "Bakaiya Adharbhut Hospital",
     "lat": 27.33272997,
     "lng": 85.20368286,
     "type": "Government",
     "district": "Makawanpur"
   },
   {
-    "name": "Bhimphedhi Phc",
+    "name": "Bhimphedhi PHC",
     "lat": 27.54575389,
     "lng": 85.12678946,
     "type": "Government",
@@ -1687,7 +1687,7 @@
     "district": "Makawanpur"
   },
   {
-    "name": "Palung phc",
+    "name": "Palung PHC",
     "lat": 27.62837781,
     "lng": 85.08199521,
     "type": "Government",
@@ -1771,21 +1771,21 @@
     "district": "Rasuwa"
   },
   {
-    "name": "Belgaari Phc",
+    "name": "Belgaari PHC",
     "lat": 27.1342123,
     "lng": 86.05803577,
     "type": "Government",
     "district": "Sindhuli"
   },
   {
-    "name": "Kapilakot Phc",
+    "name": "Kapilakot PHC",
     "lat": 27.2833512,
     "lng": 85.6397002,
     "type": "Government",
     "district": "Sindhuli"
   },
   {
-    "name": "Laampantar Phc",
+    "name": "Laampantar PHC",
     "lat": 27.3511723,
     "lng": 85.4213053,
     "type": "Government",
@@ -1806,56 +1806,56 @@
     "district": "Sindhuli"
   },
   {
-    "name": "BAHRABISE PHCC",
+    "name": "Bahrabise Phcc",
     "lat": 27.7880671,
     "lng": 85.8912099,
     "type": "Government",
     "district": "Sindhupalchok"
   },
   {
-    "name": "CHAUTARA HOSPITAL",
+    "name": "Chautara Hospital",
     "lat": 27.77995,
     "lng": 85.71139,
     "type": "Government",
     "district": "Sindhupalchok"
   },
   {
-    "name": "JALBIRE PHC",
+    "name": "Jalbire PHC",
     "lat": 27.8177534,
     "lng": 85.7315989,
     "type": "Government",
     "district": "Sindhupalchok"
   },
   {
-    "name": "MELAMCHI PHC",
+    "name": "Melamchi PHC",
     "lat": 27.8342827,
     "lng": 85.5807254,
     "type": "Government",
     "district": "Sindhupalchok"
   },
   {
-    "name": "PRIMARY HOSPITAL NAWALPUR",
+    "name": "Primary Hospital Nawalpur",
     "lat": 27.834028,
     "lng": 85.5807257,
     "type": "Government",
     "district": "Sindhupalchok"
   },
   {
-    "name": "Kathmandu Medical College Public Ltd., (KMC)",
+    "name": "Kathmandu Medical College Public LTD., (kmc)",
     "lat": 27.695864,
     "lng": 85.3507877,
     "type": "Private",
     "district": "Kathmandu"
   },
   {
-    "name": "Nepal Medical College Pvt. Ltd., Jorpati",
+    "name": "Nepal Medical College PVT. LTD., Jorpati",
     "lat": 27.7325529,
     "lng": 85.3777064,
     "type": "Private",
     "district": "Kathmandu"
   },
   {
-    "name": "Manmohan Memorial Medical College Pvt. Ltd.",
+    "name": "Manmohan Memorial Medical College PVT. LTD.",
     "lat": 27.704209,
     "lng": 85.2436327,
     "type": "Private",
@@ -1876,7 +1876,7 @@
     "district": "Makawanpur"
   },
   {
-    "name": "Chitwan Medical College Pvt. Ltd (CMC)",
+    "name": "Chitwan Medical College PVT. Ltd (cmc)",
     "lat": 27.6854192,
     "lng": 84.428366,
     "type": "Private",
@@ -1890,7 +1890,7 @@
     "district": "Chitwan"
   },
   {
-    "name": "College of Medical Sciences-Teaching Hospital",
+    "name": "College Of Medical Sciences-Teaching Hospital",
     "lat": 27.6836717,
     "lng": 84.4312754,
     "type": "Private",
@@ -1911,7 +1911,7 @@
     "district": "Bhaktapur"
   },
   {
-    "name": "B.P.E.F. EYE CHEERS",
+    "name": "B.P.E.F. Eye Cheers",
     "lat": 27.6708883,
     "lng": 85.3510644,
     "type": "Community",
@@ -1925,7 +1925,7 @@
     "district": "Bhaktapur"
   },
   {
-    "name": "Gunjaman singh Hospital",
+    "name": "Gunjaman Singh Hospital",
     "lat": 27.6353395,
     "lng": 84.5325007,
     "type": "Community",
@@ -1946,7 +1946,7 @@
     "district": "Kathmandu"
   },
   {
-    "name": "Tilganga Institute of Ophthamology",
+    "name": "Tilganga Institute Of Ophthamology",
     "lat": 27.7056677,
     "lng": 85.347965,
     "type": "Community",
@@ -2016,7 +2016,7 @@
     "district": "Gorkha"
   },
   {
-    "name": "Aaruchanaute Phc",
+    "name": "Aaruchanaute PHC",
     "lat": 28.0699993,
     "lng": 84.8012452,
     "type": "Government",
@@ -2030,14 +2030,14 @@
     "district": "Gorkha"
   },
   {
-    "name": "Jaubari Phc",
+    "name": "Jaubari PHC",
     "lat": 28.0580729,
     "lng": 84.6177212,
     "type": "Government",
     "district": "Gorkha"
   },
   {
-    "name": "Makaising Phc",
+    "name": "Makaising PHC",
     "lat": 27.8868077,
     "lng": 84.6671569,
     "type": "Government",
@@ -2058,21 +2058,21 @@
     "district": "Gorkha"
   },
   {
-    "name": "Armala phc",
+    "name": "Armala PHC",
     "lat": 28.2884085,
     "lng": 83.9915994,
     "type": "Government",
     "district": "Kaski"
   },
   {
-    "name": "Bhadabari phc",
+    "name": "Bhadabari PHC",
     "lat": 28.3152108,
     "lng": 83.8232933,
     "type": "Government",
     "district": "Kaski"
   },
   {
-    "name": "Krishti Nachnechaur Phc",
+    "name": "Krishti Nachnechaur PHC",
     "lat": 28.15957321,
     "lng": 83.95225378,
     "type": "Government",
@@ -2114,7 +2114,7 @@
     "district": "Kaski"
   },
   {
-    "name": "Sankramak tatha Saruwa Rog Aspataal",
+    "name": "Sankramak Tatha Saruwa Rog Aspataal",
     "lat": 28.1653707,
     "lng": 84.0770841,
     "type": "Government",
@@ -2128,21 +2128,21 @@
     "district": "Kaski"
   },
   {
-    "name": "CHANDRESWOR PHC",
+    "name": "Chandreswor PHC",
     "lat": 28.1700319,
     "lng": 84.311031,
     "type": "Government",
     "district": "Lamjung"
   },
   {
-    "name": "GAUNDA PHC",
+    "name": "Gaunda PHC",
     "lat": 28.16598681,
     "lng": 84.5222084,
     "type": "Government",
     "district": "Lamjung"
   },
   {
-    "name": "LAMJUNG DISTRICT HOSPITAL",
+    "name": "Lamjung District Hospital",
     "lat": 28.22946,
     "lng": 84.38041,
     "type": "Government",
@@ -2156,21 +2156,21 @@
     "district": "Lamjung"
   },
   {
-    "name": "DISTRICT HOSPITAL MANANG",
+    "name": "District Hospital Manang",
     "lat": 28.55,
     "lng": 84.244,
     "type": "Government",
     "district": "Manang"
   },
   {
-    "name": "LETE PHC",
+    "name": "Lete PHC",
     "lat": 28.6336694,
     "lng": 83.4544005,
     "type": "Government",
     "district": "Mustang"
   },
   {
-    "name": "MUSTANG DISTRICT HOSPITAL",
+    "name": "Mustang District Hospital",
     "lat": 28.78564,
     "lng": 83.73154,
     "type": "Government",
@@ -2184,42 +2184,42 @@
     "district": "Myagdi"
   },
   {
-    "name": "Durbang Phc",
+    "name": "Durbang PHC",
     "lat": 28.4128974,
     "lng": 83.38602289,
     "type": "Government",
     "district": "Myagdi"
   },
   {
-    "name": "BULINGTAR PHC",
+    "name": "Bulingtar PHC",
     "lat": 27.833701,
     "lng": 84.1759758,
     "type": "Government",
     "district": "Nawalparasi(Bardaghat Susta Purb)"
   },
   {
-    "name": "CHORMARA PHC",
+    "name": "Chormara PHC",
     "lat": 27.6108875,
     "lng": 83.8188825,
     "type": "Government",
     "district": "Nawalparasi(Bardaghat Susta Purb)"
   },
   {
-    "name": "DEURALI PRIMARY HOSPITAL",
+    "name": "Deurali Primary Hospital",
     "lat": 28.24034,
     "lng": 83.7368,
     "type": "Government",
     "district": "Nawalparasi(Bardaghat Susta Purb)"
   },
   {
-    "name": "DEVCHULI NAGAR HOSPITAL",
+    "name": "Devchuli Nagar Hospital",
     "lat": 27.675171,
     "lng": 84.2036753,
     "type": "Government",
     "district": "Nawalparasi(Bardaghat Susta Purb)"
   },
   {
-    "name": "GAINDAKOT MUNICIPALITY HOSPITAL",
+    "name": "Gaindakot Municipality Hospital",
     "lat": 27.699949,
     "lng": 84.3637066,
     "type": "Government",
@@ -2233,7 +2233,7 @@
     "district": "Nawalparasi(Bardaghat Susta Purb)"
   },
   {
-    "name": "RAKUWA PHCC",
+    "name": "Rakuwa Phcc",
     "lat": 27.8402487,
     "lng": 84.0486378,
     "type": "Government",
@@ -2247,21 +2247,21 @@
     "district": "Parbat"
   },
   {
-    "name": "LUNKHU DEURALI PHC",
+    "name": "Lunkhu Deurali PHC",
     "lat": 28.1136442,
     "lng": 83.6733729,
     "type": "Government",
     "district": "Parbat"
   },
   {
-    "name": "THULIPOKHARI PHC",
+    "name": "Thulipokhari PHC",
     "lat": 28.20452793,
     "lng": 83.73002591,
     "type": "Government",
     "district": "Parbat"
   },
   {
-    "name": "BHIRKOT NAGAR HOSPITAL",
+    "name": "Bhirkot Nagar Hospital",
     "lat": 28.06164493,
     "lng": 83.80572556,
     "type": "Government",
@@ -2275,7 +2275,7 @@
     "district": "Syangja"
   },
   {
-    "name": "GALYANG CITY HOSPITAL",
+    "name": "Galyang City Hospital",
     "lat": 27.9346469,
     "lng": 83.6636069,
     "type": "Government",
@@ -2289,7 +2289,7 @@
     "district": "Syangja"
   },
   {
-    "name": "KALIGANDAKI HOSPITAL",
+    "name": "Kaligandaki Hospital",
     "lat": 27.9735266,
     "lng": 83.5855803,
     "type": "Government",
@@ -2331,7 +2331,7 @@
     "district": "Tanahu"
   },
   {
-    "name": "Bhimad Phc",
+    "name": "Bhimad PHC",
     "lat": 27.9801448,
     "lng": 84.080908,
     "type": "Government",
@@ -2345,14 +2345,14 @@
     "district": "Tanahu"
   },
   {
-    "name": "G.P Koirala NCR",
+    "name": "G.P Koirala Ncr",
     "lat": 28.0298,
     "lng": 84.08257,
     "type": "Government",
     "district": "Tanahu"
   },
   {
-    "name": "Purandihi Phc",
+    "name": "Purandihi PHC",
     "lat": 28.019777,
     "lng": 84.3874032,
     "type": "Government",
@@ -2408,14 +2408,14 @@
     "district": "Arghakhanchi"
   },
   {
-    "name": "Balkot Phc",
+    "name": "Balkot PHC",
     "lat": 27.9526608,
     "lng": 83.245462,
     "type": "Government",
     "district": "Arghakhanchi"
   },
   {
-    "name": "Thada Phc",
+    "name": "Thada PHC",
     "lat": 27.85977,
     "lng": 83.0865,
     "type": "Government",
@@ -2429,7 +2429,7 @@
     "district": "Banke"
   },
   {
-    "name": "Bheri Hospital,Nepalgunj",
+    "name": "Bheri Hospital,nepalgunj",
     "lat": 28.053061,
     "lng": 81.620132,
     "type": "Government",
@@ -2471,14 +2471,14 @@
     "district": "Bardiya"
   },
   {
-    "name": "Rajapur Phc",
+    "name": "Rajapur PHC",
     "lat": 28.4291852,
     "lng": 81.0763891,
     "type": "Government",
     "district": "Bardiya"
   },
   {
-    "name": "Sorahawa Phc",
+    "name": "Sorahawa PHC",
     "lat": 28.172131,
     "lng": 81.5011315,
     "type": "Government",
@@ -2492,7 +2492,7 @@
     "district": "Bardiya"
   },
   {
-    "name": "Banglachuli hospital",
+    "name": "Banglachuli Hospital",
     "lat": 28.1827613,
     "lng": 81.4853106,
     "type": "Government",
@@ -2506,28 +2506,28 @@
     "district": "Dang"
   },
   {
-    "name": "Rapti Academy of Health Sciences, Ghorahi",
+    "name": "Rapti Academy Of Health Sciences, Ghorahi",
     "lat": 28.0372776,
     "lng": 82.4890755,
     "type": "Government",
     "district": "Dang"
   },
   {
-    "name": "Rapti Provincial Hospital,Tulsipur",
+    "name": "Rapti Provincial Hospital,tulsipur",
     "lat": 28.135929,
     "lng": 82.297423,
     "type": "Government",
     "district": "Dang"
   },
   {
-    "name": "Srigaun Phc",
+    "name": "Srigaun PHC",
     "lat": 28.11548349,
     "lng": 82.23180035,
     "type": "Government",
     "district": "Dang"
   },
   {
-    "name": "Syuja Phc",
+    "name": "Syuja PHC",
     "lat": 28.0635931,
     "lng": 82.5506898,
     "type": "Government",
@@ -2569,7 +2569,7 @@
     "district": "Gulmi"
   },
   {
-    "name": "Harnampur Phc",
+    "name": "Harnampur PHC",
     "lat": 27.50528934,
     "lng": 83.09075926,
     "type": "Government",
@@ -2583,7 +2583,7 @@
     "district": "Kapilbastu"
   },
   {
-    "name": "Maharajgung Phc",
+    "name": "Maharajgung PHC",
     "lat": 27.57090179,
     "lng": 82.95463355,
     "type": "Government",
@@ -2667,14 +2667,14 @@
     "district": "Palpa"
   },
   {
-    "name": "Bhingri Phc",
+    "name": "Bhingri PHC",
     "lat": 28.1445925,
     "lng": 82.7100811,
     "type": "Government",
     "district": "Pyuthan"
   },
   {
-    "name": "Khalanga Phc",
+    "name": "Khalanga PHC",
     "lat": 28.0825342,
     "lng": 82.8841016,
     "type": "Government",
@@ -2695,28 +2695,28 @@
     "district": "Rolpa"
   },
   {
-    "name": "Holeri Phc",
+    "name": "Holeri PHC",
     "lat": 28.1852226,
     "lng": 82.5034732,
     "type": "Government",
     "district": "Rolpa"
   },
   {
-    "name": "Sulichaur Phc",
+    "name": "Sulichaur PHC",
     "lat": 28.24627994,
     "lng": 82.72995606,
     "type": "Government",
     "district": "Rolpa"
   },
   {
-    "name": "Kol Phc",
+    "name": "Kol PHC",
     "lat": 28.60204002,
     "lng": 82.76626012,
     "type": "Government",
     "district": "Rukum East"
   },
   {
-    "name": "RUKUM EAST HOSPITAL",
+    "name": "Rukum East Hospital",
     "lat": 28.617506,
     "lng": 82.627778,
     "type": "Government",
@@ -2737,7 +2737,7 @@
     "district": "Rupendehi"
   },
   {
-    "name": "DEVDAHA NAGAR HOSPITAL",
+    "name": "Devdaha Nagar Hospital",
     "lat": 27.7167009,
     "lng": 83.2474013,
     "type": "Government",
@@ -2779,35 +2779,35 @@
     "district": "Rupendehi"
   },
   {
-    "name": "Devdaha Medical College and Research Institute Pvt. Ltd.",
+    "name": "Devdaha Medical College And Research Institute PVT. LTD.",
     "lat": 27.6472874,
     "lng": 83.5362588,
     "type": "Private",
     "district": "Rupendehi"
   },
   {
-    "name": "Universal College of Medical Science Teaching Hospital",
+    "name": "Universal College Of Medical Science Teaching Hospital",
     "lat": 27.5981413,
     "lng": 83.7240735,
     "type": "Private",
     "district": "Rupendehi"
   },
   {
-    "name": "Lord Buddha Educational Academy Ltd. / Nepalgunj Medical,",
+    "name": "Lord Buddha Educational Academy LTD. / Nepalgunj Medical,",
     "lat": 28.1687493,
     "lng": 81.4827275,
     "type": "Private",
     "district": "Banke"
   },
   {
-    "name": "LMCN",
+    "name": "Lmcn",
     "lat": 27.844303,
     "lng": 83.54415742,
     "type": "Private",
     "district": "Palpa"
   },
   {
-    "name": "Jilla Aankh Upachar Kender, NNJS",
+    "name": "Jilla Aankh Upachar Kender, Nnjs",
     "lat": 28.0687083,
     "lng": 83.2464265,
     "type": "Community",
@@ -2835,21 +2835,21 @@
     "district": "Palpa"
   },
   {
-    "name": "RanaAmbika Eye Hospital, NNJS",
+    "name": "Ranaambika Eye Hospital, Nnjs",
     "lat": 27.4966652,
     "lng": 83.4558493,
     "type": "Community",
     "district": "Rupandehi"
   },
   {
-    "name": "Rapti Eye Hospital, NNJS",
+    "name": "Rapti Eye Hospital, Nnjs",
     "lat": 28.1634761,
     "lng": 82.31291,
     "type": "Community",
     "district": "Dang"
   },
   {
-    "name": "Fattebal Eye Hospital, NNJS",
+    "name": "Fattebal Eye Hospital, Nnjs",
     "lat": 28.0589413,
     "lng": 81.6113566,
     "type": "Community",
@@ -2863,21 +2863,21 @@
     "district": "Dailekh"
   },
   {
-    "name": "DULLU HOSPITAL",
+    "name": "Dullu Hospital",
     "lat": 28.82723,
     "lng": 81.71003,
     "type": "Government",
     "district": "Dailekh"
   },
   {
-    "name": "LAKANDRA PHC",
+    "name": "Lakandra PHC",
     "lat": 28.98324116,
     "lng": 81.55083038,
     "type": "Government",
     "district": "Dailekh"
   },
   {
-    "name": "NAUMULE PHC",
+    "name": "Naumule PHC",
     "lat": 28.90601099,
     "lng": 81.81021001,
     "type": "Government",
@@ -2905,14 +2905,14 @@
     "district": "Humla"
   },
   {
-    "name": "CHHEDAGAD NAGAR HOSPITAL",
+    "name": "Chhedagad Nagar Hospital",
     "lat": 28.7570254,
     "lng": 82.0430245,
     "type": "Government",
     "district": "Jajarkot"
   },
   {
-    "name": "Dalli Phc",
+    "name": "Dalli PHC",
     "lat": 28.7913768,
     "lng": 82.2988845,
     "type": "Government",
@@ -2926,28 +2926,28 @@
     "district": "Jajarkot"
   },
   {
-    "name": "Garkhakot Phc",
+    "name": "Garkhakot PHC",
     "lat": 28.8700595,
     "lng": 81.9521668,
     "type": "Government",
     "district": "Jajarkot"
   },
   {
-    "name": "Limsha Phc",
+    "name": "Limsha PHC",
     "lat": 28.94361474,
     "lng": 82.25397877,
     "type": "Government",
     "district": "Jajarkot"
   },
   {
-    "name": "kalikakhetu PHC",
+    "name": "Kalikakhetu PHC",
     "lat": 29.2332887,
     "lng": 81.9297427,
     "type": "Government",
     "district": "Jumla"
   },
   {
-    "name": "Karnali Academy of Health Science",
+    "name": "Karnali Academy Of Health Science",
     "lat": 29.28273,
     "lng": 82.18302,
     "type": "Government",
@@ -3003,21 +3003,21 @@
     "district": "Rukum West"
   },
   {
-    "name": "Kotjari Phc-WR",
+    "name": "Kotjari Phc-Wr",
     "lat": 28.65868462,
     "lng": 82.23236167,
     "type": "Government",
     "district": "Rukum West"
   },
   {
-    "name": "SaniBheri Municipality Hospital",
+    "name": "Sanibheri Municipality Hospital",
     "lat": 28.6946659,
     "lng": 82.429351,
     "type": "Government",
     "district": "Rukum West"
   },
   {
-    "name": "SHAHID SMIRTI NAGAR HOSPITAL",
+    "name": "Shahid Smirti Nagar Hospital",
     "lat": 28.57178596,
     "lng": 82.21846768,
     "type": "Government",
@@ -3031,35 +3031,35 @@
     "district": "Salyan"
   },
   {
-    "name": "LEKHPOKHARA PHC",
+    "name": "Lekhpokhara PHC",
     "lat": 28.3626032,
     "lng": 82.265038,
     "type": "Government",
     "district": "Salyan"
   },
   {
-    "name": "SALYAN HOSPITAL",
+    "name": "Salyan Hospital",
     "lat": 28.37283,
     "lng": 82.17293,
     "type": "Government",
     "district": "Salyan"
   },
   {
-    "name": "THARMARE PHC",
+    "name": "Tharmare PHC",
     "lat": 28.4857043,
     "lng": 82.2556338,
     "type": "Government",
     "district": "Salyan"
   },
   {
-    "name": "Awalching Phc",
+    "name": "Awalching PHC",
     "lat": 28.65507,
     "lng": 81.78204,
     "type": "Government",
     "district": "Surkhet"
   },
   {
-    "name": "Dasrathpur Phc",
+    "name": "Dasrathpur PHC",
     "lat": 28.48988384,
     "lng": 81.7591793,
     "type": "Government",
@@ -3073,7 +3073,7 @@
     "district": "Surkhet"
   },
   {
-    "name": "Salkot Phc",
+    "name": "Salkot PHC",
     "lat": 28.81393,
     "lng": 81.46802,
     "type": "Government",
@@ -3143,7 +3143,7 @@
     "district": "Kailali"
   },
   {
-    "name": "Udasipur PHCC",
+    "name": "Udasipur Phcc",
     "lat": 28.6724468,
     "lng": 80.810546,
     "type": "Government",
@@ -3157,7 +3157,7 @@
     "district": "Kailali"
   },
   {
-    "name": "SETI PROVINCIAL HOSPITAL",
+    "name": "Seti Provincial Hospital",
     "lat": 28.703537,
     "lng": 80.587635,
     "type": "Government",
@@ -3178,14 +3178,14 @@
     "district": "Kailali"
   },
   {
-    "name": "Joshipur PHCC",
+    "name": "Joshipur Phcc",
     "lat": 28.575392,
     "lng": 81.0202516,
     "type": "Government",
     "district": "Kailali"
   },
   {
-    "name": "Chaumala PHCC",
+    "name": "Chaumala Phcc",
     "lat": 28.7736121,
     "lng": 80.7331444,
     "type": "Government",
@@ -3199,7 +3199,7 @@
     "district": "Kailali"
   },
   {
-    "name": "Bhajani PHCC",
+    "name": "Bhajani Phcc",
     "lat": 28.5019724,
     "lng": 80.9656187,
     "type": "Government",
@@ -3248,14 +3248,14 @@
     "district": "Dadeldhura"
   },
   {
-    "name": "DADELDHURA HOSPITAL",
+    "name": "Dadeldhura Hospital",
     "lat": 29.3048151,
     "lng": 80.589422,
     "type": "Government",
     "district": "Dadeldhura"
   },
   {
-    "name": "Kolti Phc",
+    "name": "Kolti PHC",
     "lat": 29.5045681,
     "lng": 81.669026,
     "type": "Government",
@@ -3269,7 +3269,7 @@
     "district": "Bajura"
   },
   {
-    "name": "Rayal Phc",
+    "name": "Rayal PHC",
     "lat": 29.4525818,
     "lng": 80.9075734,
     "type": "Government",
@@ -3283,7 +3283,7 @@
     "district": "Bajhang"
   },
   {
-    "name": "Deulekha Phc",
+    "name": "Deulekha PHC",
     "lat": 29.522,
     "lng": 80.81943,
     "type": "Government",
@@ -3325,7 +3325,7 @@
     "district": "Baitadi"
   },
   {
-    "name": "Kesharpur Phc",
+    "name": "Kesharpur PHC",
     "lat": 29.40926,
     "lng": 80.43576,
     "type": "Government",
