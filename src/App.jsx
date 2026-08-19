@@ -1,5 +1,20 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Layout, Input, Card, Button, Tooltip, AutoComplete, Spin, message, Typography } from 'antd';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { 
+  Layout, 
+  Input, 
+  Card, 
+  Button, 
+  Tooltip, 
+  AutoComplete, 
+  Spin, 
+  message, 
+  Typography,
+  Select,
+  Tag,
+  Slider,
+  Popover,
+  Space
+} from 'antd';
 import { 
   AimOutlined, 
   EnvironmentOutlined,
@@ -8,9 +23,28 @@ import {
   FullscreenOutlined,
   CompassOutlined,
   MenuOutlined,
-  CloseOutlined
+  CloseOutlined,
+  FilterOutlined,
+  RadarChartOutlined,
+  BgColorsOutlined,
+  LineOutlined,
+  DownloadOutlined,
+  ShareAltOutlined,
+  CarOutlined,
+  ClearOutlined
 } from '@ant-design/icons';
-import { MapContainer, TileLayer, GeoJSON, Marker, Popup, useMap, ScaleControl, Circle } from 'react-leaflet';
+import { 
+  MapContainer, 
+  TileLayer, 
+  GeoJSON, 
+  Marker, 
+  Popup, 
+  useMap, 
+  ScaleControl, 
+  Circle, 
+  Polyline,
+  useMapEvents 
+} from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet.markercluster';
 import 'leaflet/dist/leaflet.css';
@@ -18,11 +52,11 @@ import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import './App.css';
 
-// Import center and bounds from provinces config
-import { NEPAL_CENTER, NEPAL_BOUNDS } from './data/provinces';
+import { NEPAL_CENTER, NEPAL_BOUNDS, PROVINCE_DATA } from './data/provinces';
 
 const { Sider, Content } = Layout;
 const { Title, Text, Paragraph } = Typography;
+const { Option } = Select;
 
 // Fix Leaflet default icon paths in React environment
 delete L.Icon.Default.prototype._getIconUrl;
@@ -32,27 +66,130 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
+// Basemap configurations
+const BASEMAPS = {
+  voyager: {
+    name: 'CartoDB Voyager (Street)',
+    url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+    attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; OpenStreetMap contributors',
+    maxZoom: 19
+  },
+  satellite: {
+    name: 'Satellite (Esri Imagery)',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP',
+    maxZoom: 18
+  },
+  osm: {
+    name: 'OpenStreetMap Standard',
+    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 19
+  },
+  dark: {
+    name: 'CartoDB Dark Matter',
+    url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; OpenStreetMap contributors',
+    maxZoom: 19
+  },
+  topo: {
+    name: 'OpenTopoMap (Terrain)',
+    url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+    attribution: 'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap (CC-BY-SA)',
+    maxZoom: 17
+  }
+};
+
+// Facility classification helper
+function getFacilityCategory(typeStr = '') {
+  const t = typeStr.toLowerCase();
+  if (t.includes('eye')) return 'eye';
+  if (t.includes('private')) return 'private';
+  if (t.includes('community')) return 'community';
+  return 'government';
+}
+
+function getFacilityMeta(typeStr = '') {
+  const cat = getFacilityCategory(typeStr);
+  switch(cat) {
+    case 'eye':
+      return { label: 'Eye Hospital', color: '#10b981', iconClass: 'fa-solid fa-eye', tagColor: 'cyan' };
+    case 'private':
+      return { label: 'Private Hospital', color: '#8b5cf6', iconClass: 'fa-solid fa-hospital-user', tagColor: 'purple' };
+    case 'community':
+      return { label: 'Community Hospital', color: '#06b6d4', iconClass: 'fa-solid fa-hand-holding-medical', tagColor: 'blue' };
+    case 'government':
+    default:
+      return { label: 'Government Hospital / PHC', color: '#ef4444', iconClass: 'fa-solid fa-hospital', tagColor: 'red' };
+  }
+}
+
+// Great-circle Haversine Distance (in km)
+function calculateHaversine(lat1, lon1, lat2, lon2) {
+  if (lat1 == null || lon1 == null || lat2 == null || lon2 == null) return null;
+  const R = 6371; // km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+// Choropleth density color steps
+function getChoroplethColor(count) {
+  if (count === 0) return '#f0f0f0';
+  if (count <= 2) return '#e6f7ff';
+  if (count <= 5) return '#bae7ff';
+  if (count <= 10) return '#69c0ff';
+  if (count <= 20) return '#1890ff';
+  if (count <= 35) return '#096dd9';
+  return '#003a8c';
+}
+
+function resolveDistrictName(props) {
+  if (!props) return 'Unknown';
+  const keys = ['DISTRICT', 'district', 'Dist_Name', 'DIST_NAME', 'name', 'NAME'];
+  for (const key of keys) {
+    if (props[key]) return props[key];
+  }
+  return 'Unknown';
+}
+
 // ----------------------------------------------------
 // CHILD COMPONENT: Map Controller & Event Handler
 // ----------------------------------------------------
-function MapController({ mapRef, setMouseCoords, districtLayerRef }) {
+function MapController({ 
+  mapRef, 
+  setMouseCoords, 
+  districtLayerRef, 
+  isMeasureMode, 
+  onMapClickForMeasure,
+  isRadiusMode,
+  setRadiusCenter
+}) {
   const map = useMap();
 
   useEffect(() => {
     mapRef.current = map;
-    
-    // Mouse coords handler
-    const onMouseMove = (e) => {
-      setMouseCoords({ lat: e.latlng.lat, lng: e.latlng.lng });
-    };
-    
-    map.on('mousemove', onMouseMove);
-    return () => {
-      map.off('mousemove', onMouseMove);
-    };
-  }, [map, mapRef, setMouseCoords]);
+  }, [map, mapRef]);
 
-  // Keep district outlines clearly layered on top of basemap
+  useMapEvents({
+    mousemove(e) {
+      setMouseCoords({ lat: e.latlng.lat, lng: e.latlng.lng });
+    },
+    click(e) {
+      if (isMeasureMode) {
+        onMapClickForMeasure([e.latlng.lat, e.latlng.lng]);
+      } else if (isRadiusMode) {
+        setRadiusCenter([e.latlng.lat, e.latlng.lng]);
+        message.info(`Radius center set to [${e.latlng.lat.toFixed(3)}, ${e.latlng.lng.toFixed(3)}]`);
+      }
+    }
+  });
+
   useEffect(() => {
     if (districtLayerRef.current) {
       districtLayerRef.current.bringToFront();
@@ -65,47 +202,119 @@ function MapController({ mapRef, setMouseCoords, districtLayerRef }) {
 // ----------------------------------------------------
 // CHILD COMPONENT: Leaflet MarkerCluster Layer
 // ----------------------------------------------------
-function HealthFacilitiesClusterLayer({ facilities, onSelect, clusterGroupRef }) {
+function HealthFacilitiesClusterLayer({ facilities, onSelect, clusterGroupRef, userPosition }) {
   const map = useMap();
 
   useEffect(() => {
-    if (!map || !facilities || facilities.length === 0) return;
+    if (!map) return;
 
-    // Standard Leaflet MarkerCluster group (default styles)
+    // Clean previous group
+    if (clusterGroupRef.current && map.hasLayer(clusterGroupRef.current)) {
+      map.removeLayer(clusterGroupRef.current);
+    }
+
+    if (!facilities || facilities.length === 0) return;
+
+    // Custom cluster icons with proportions & sizes
     const clusterGroup = L.markerClusterGroup({
-      showCoverageOnHover: false,
+      showCoverageOnHover: true,
       zoomToBoundsOnClick: true,
-      maxClusterRadius: 45
+      maxClusterRadius: 50,
+      spiderfyOnMaxZoom: true,
+      iconCreateFunction: function (cluster) {
+        const count = cluster.getChildCount();
+        const markers = cluster.getAllChildMarkers();
+        let govCount = 0;
+        let privCount = 0;
+        let commCount = 0;
+        let eyeCount = 0;
+
+        markers.forEach(m => {
+          const c = m.options.facilityCategory;
+          if (c === 'eye') eyeCount++;
+          else if (c === 'private') privCount++;
+          else if (c === 'community') commCount++;
+          else govCount++;
+        });
+
+        let sizeClass = 'cluster-small';
+        let dimension = 36;
+        if (count > 40) {
+          sizeClass = 'cluster-large';
+          dimension = 52;
+        } else if (count > 12) {
+          sizeClass = 'cluster-medium';
+          dimension = 44;
+        }
+
+        const breakdownTooltip = `${count} Facilities: ${govCount} Gov, ${privCount} Private, ${commCount + eyeCount} Other`;
+
+        return L.divIcon({
+          html: `
+            <div class="custom-cluster-badge ${sizeClass}" title="${breakdownTooltip}">
+              <div class="cluster-inner-count">
+                <span>${count}</span>
+              </div>
+            </div>
+          `,
+          className: 'custom-cluster-marker-wrap',
+          iconSize: [dimension, dimension],
+          iconAnchor: [dimension / 2, dimension / 2]
+        });
+      }
     });
 
     clusterGroupRef.current = clusterGroup;
 
     facilities.forEach(fac => {
-      // Red hospital icon marker wrapper
+      const meta = getFacilityMeta(fac.type);
+      const cat = getFacilityCategory(fac.type);
+
       const divIcon = L.divIcon({
         className: 'custom-facility-marker-container',
         html: `
-          <div class="custom-landmark-marker" style="width: 24px; height: 24px;">
-            <div class="marker-icon-wrapper" style="width: 20px; height: 20px; font-size: 0.65rem; background: #ef4444; border: 1.5px solid #ffffff; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: white;">
-              <i class="fa-solid fa-hospital"></i>
+          <div class="custom-landmark-marker" style="width: 26px; height: 26px;">
+            <div class="marker-icon-wrapper" style="width: 22px; height: 22px; background: ${meta.color}; border: 2px solid #ffffff;">
+              <i class="${meta.iconClass}"></i>
             </div>
           </div>
         `,
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
+        iconSize: [26, 26],
+        iconAnchor: [13, 13]
       });
 
-      const marker = L.marker([fac.lat, fac.lng], { icon: divIcon })
-        .bindPopup(`
-          <div style="min-width: 180px; padding: 2px;">
-            <h4 style="margin:0 0 4px 0; font-size:0.85rem; font-weight:700; color:#262626;">${fac.name}</h4>
-            <p style="margin:0; font-size:0.75rem; color:#ef4444; font-weight:600;"><i class="fa-solid fa-stethoscope"></i> ${fac.type}</p>
-            <p style="margin:4px 0 0 0; font-size:0.7rem; color:#8c8c8c;"><i class="fa-solid fa-location-dot"></i> ${fac.district} District</p>
+      const distStr = userPosition ? ` (${calculateHaversine(userPosition[0], userPosition[1], fac.lat, fac.lng).toFixed(1)} km away)` : '';
+
+      const marker = L.marker([fac.lat, fac.lng], { 
+        icon: divIcon,
+        facilityCategory: cat
+      })
+      .bindPopup(`
+        <div style="min-width: 220px; padding: 4px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <span style="font-size:0.68rem; font-weight:700; color:${meta.color}; text-transform:uppercase; letter-spacing:0.5px;">
+              <i class="${meta.iconClass}"></i> ${fac.type}
+            </span>
           </div>
-        `, { closeButton: false })
-        .on('click', () => {
-          onSelect(fac);
-        });
+          <h4 style="margin:0 0 6px 0; font-size:0.88rem; font-weight:700; color:#1f2937; line-height:1.2;">${fac.name}</h4>
+          <p style="margin:0 0 8px 0; font-size:0.75rem; color:#6b7280;">
+            <i class="fa-solid fa-location-dot" style="color:#ef4444; margin-right:4px;"></i> ${fac.district} District ${distStr}
+          </p>
+          <div style="display:flex; gap:6px; margin-top:8px;">
+            <a 
+              href="https://www.google.com/maps/dir/?api=1&destination=${fac.lat},${fac.lng}" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              style="flex:1; text-align:center; background:#1890ff; color:white; padding:4px 8px; border-radius:4px; font-size:0.75rem; text-decoration:none; font-weight:600; display:flex; align-items:center; justify-content:center; gap:4px;"
+            >
+              <i class="fa-solid fa-diamond-turn-right"></i> Directions
+            </a>
+          </div>
+        </div>
+      `, { closeButton: true })
+      .on('click', () => {
+        onSelect(fac);
+      });
 
       clusterGroup.addLayer(marker);
     });
@@ -117,7 +326,7 @@ function HealthFacilitiesClusterLayer({ facilities, onSelect, clusterGroupRef })
         map.removeLayer(clusterGroup);
       }
     };
-  }, [map, facilities]);
+  }, [map, facilities, userPosition, onSelect]);
 
   return null;
 }
@@ -130,20 +339,40 @@ export default function App() {
   const districtLayerRef = useRef(null);
   const clusterGroupRef = useRef(null);
 
-  // States
+  // States: Geo & Data
   const [districtGeoJson, setDistrictGeoJson] = useState(null);
   const [districtsLoading, setDistrictsLoading] = useState(true);
   const [healthFacilities, setHealthFacilities] = useState([]);
   const [selectedEntity, setSelectedEntity] = useState(null);
+  
+  // Search & Navigation
   const [hospitalsSearchQuery, setHospitalsSearchQuery] = useState('');
   const [searchVal, setSearchVal] = useState('');
   const [mouseCoords, setMouseCoords] = useState({ lat: null, lng: null });
 
-  // Responsive states
+  // Filtering Controls
+  const [selectedTypeFilter, setSelectedTypeFilter] = useState('all');
+  const [selectedProvince, setSelectedProvince] = useState(null);
+  const [selectedDistrictFilter, setSelectedDistrictFilter] = useState(null);
+
+  // Map Basemap & Thematic Layers
+  const [currentBasemap, setCurrentBasemap] = useState('voyager');
+  const [showDensityChoropleth, setShowDensityChoropleth] = useState(false);
+
+  // Proximity / Radius Filter Mode
+  const [isRadiusMode, setIsRadiusMode] = useState(false);
+  const [radiusKm, setRadiusKm] = useState(25);
+  const [radiusCenter, setRadiusCenter] = useState(null);
+
+  // Distance Measuring Tool Mode
+  const [isMeasureMode, setIsMeasureMode] = useState(false);
+  const [measurePoints, setMeasurePoints] = useState([]);
+
+  // Responsive & UI states
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [collapsed, setCollapsed] = useState(true);
 
-  // Geolocation states
+  // GPS geolocation states
   const [userPosition, setUserPosition] = useState(null);
   const [userAccuracy, setUserAccuracy] = useState(null);
   const [gpsLoading, setGpsLoading] = useState(false);
@@ -161,62 +390,152 @@ export default function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Invalidate map size when sidebar collapses/expands (vital for desktop width shifts)
+  // Map size recalculation on sidebar state toggle
   useEffect(() => {
     if (mapRef.current) {
       setTimeout(() => {
         mapRef.current.invalidateSize();
-      }, 250); // Match transition duration
+      }, 250);
     }
   }, [collapsed]);
 
-  // Fetch boundaries and coordinates on startup
+  // Fetch boundary & facility listings on startup
   useEffect(() => {
-    // Fetch locally compiled high-resolution new official districts geojson (with cache busting)
     fetch('/nepal-districts-highres.geojson?v=2')
       .then(res => res.json())
       .then(data => {
         setDistrictGeoJson(data);
         setDistrictsLoading(false);
       })
-      .catch(err => {
+      .catch(() => {
         setDistrictsLoading(false);
         message.error("Failed to load official district boundaries.");
       });
 
-    // Fetch hospital coordinates list (with cache busting)
     fetch('/nepal-health-facilities.json?v=2')
       .then(res => res.json())
-      .then(data => setHealthFacilities(data))
-      .catch(err => message.error("Failed to load hospital listings."));
+      .then(data => {
+        setHealthFacilities(data);
+      })
+      .catch(() => message.error("Failed to load hospital listings."));
   }, []);
 
-  // Standard district styles
+  // Check URL params on startup for deep linking
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const facilityParam = params.get('facility');
+    const latParam = params.get('lat');
+    const lngParam = params.get('lng');
+    const zoomParam = params.get('zoom');
+
+    if (latParam && lngParam && mapRef.current) {
+      mapRef.current.setView([parseFloat(latParam), parseFloat(lngParam)], parseInt(zoomParam || '13'));
+    }
+
+    if (facilityParam && healthFacilities.length > 0) {
+      const found = healthFacilities.find(h => h.name.toLowerCase() === facilityParam.toLowerCase());
+      if (found) {
+        selectHealthFacility(found);
+      }
+    }
+  }, [healthFacilities]);
+
+  // District facility count map for Choropleth
+  const districtFacilityCounts = useMemo(() => {
+    const counts = {};
+    healthFacilities.forEach(f => {
+      const d = (f.district || '').toLowerCase().trim();
+      counts[d] = (counts[d] || 0) + 1;
+    });
+    return counts;
+  }, [healthFacilities]);
+
+  // Filtered facilities based on: Type + Province + District + Search + Radius Proximity
+  const filteredFacilities = useMemo(() => {
+    return healthFacilities.filter(fac => {
+      if (selectedTypeFilter !== 'all') {
+        const cat = getFacilityCategory(fac.type);
+        if (cat !== selectedTypeFilter) return false;
+      }
+
+      if (selectedProvince) {
+        const provData = PROVINCE_DATA[selectedProvince];
+        if (provData && !provData.districts.some(d => d.toLowerCase() === (fac.district || '').toLowerCase())) {
+          return false;
+        }
+      }
+
+      if (selectedDistrictFilter) {
+        if ((fac.district || '').toLowerCase() !== selectedDistrictFilter.toLowerCase()) {
+          return false;
+        }
+      }
+
+      if (hospitalsSearchQuery) {
+        const q = hospitalsSearchQuery.toLowerCase();
+        const matchName = (fac.name || '').toLowerCase().includes(q);
+        const matchDist = (fac.district || '').toLowerCase().includes(q);
+        const matchType = (fac.type || '').toLowerCase().includes(q);
+        if (!matchName && !matchDist && !matchType) return false;
+      }
+
+      if (isRadiusMode && radiusCenter) {
+        const dist = calculateHaversine(radiusCenter[0], radiusCenter[1], fac.lat, fac.lng);
+        if (dist > radiusKm) return false;
+      }
+
+      return true;
+    }).map(fac => {
+      const refPoint = radiusCenter || userPosition;
+      const distanceKm = refPoint ? calculateHaversine(refPoint[0], refPoint[1], fac.lat, fac.lng) : null;
+      return { ...fac, distanceKm };
+    }).sort((a, b) => {
+      if (a.distanceKm != null && b.distanceKm != null) {
+        return a.distanceKm - b.distanceKm;
+      }
+      return 0;
+    });
+  }, [
+    healthFacilities, 
+    selectedTypeFilter, 
+    selectedProvince, 
+    selectedDistrictFilter, 
+    hospitalsSearchQuery, 
+    isRadiusMode, 
+    radiusCenter, 
+    radiusKm, 
+    userPosition
+  ]);
+
+  // Standard or Choropleth district styles
   function getDistrictStyle(feature) {
     const distName = resolveDistrictName(feature.properties);
     const isSelected = selectedEntity && selectedEntity.type === 'district' && selectedEntity.name.toLowerCase() === distName.toLowerCase();
+    
+    if (showDensityChoropleth) {
+      const count = districtFacilityCounts[distName.toLowerCase().trim()] || 0;
+      return {
+        color: isSelected ? '#ff4d4f' : '#ffffff',
+        weight: isSelected ? 3 : 1,
+        opacity: 0.9,
+        fillColor: getChoroplethColor(count),
+        fillOpacity: 0.75
+      };
+    }
 
     return {
       color: isSelected ? 'var(--accent)' : '#1890ff',
-      weight: isSelected ? 3 : 1.5,
+      weight: isSelected ? 3 : 1.2,
       opacity: 0.8,
       fillColor: '#1890ff',
-      fillOpacity: isSelected ? 0.15 : 0.01
+      fillOpacity: isSelected ? 0.18 : 0.02
     };
   }
 
-  function resolveDistrictName(props) {
-    if (!props) return 'Unknown';
-    const keys = ['DISTRICT', 'district', 'Dist_Name', 'DIST_NAME', 'name', 'NAME'];
-    for (const key of keys) {
-      if (props[key]) return props[key];
-    }
-    return 'Unknown';
-  }
-
-  // Handle District clicks
+  // Handle District clicks & hovers
   const onEachDistrict = (feature, layer) => {
     const distName = resolveDistrictName(feature.properties);
+    const count = districtFacilityCounts[distName.toLowerCase().trim()] || 0;
 
     layer.on({
       mouseover: (e) => {
@@ -224,7 +543,7 @@ export default function App() {
         lyr.setStyle({
           color: 'var(--accent)',
           weight: 2.5,
-          fillOpacity: 0.08
+          fillOpacity: showDensityChoropleth ? 0.9 : 0.12
         });
         lyr.bringToFront();
       },
@@ -234,18 +553,22 @@ export default function App() {
         }
       },
       click: () => {
-        selectDistrict(distName, layer);
+        selectDistrict(distName, layer, count);
       }
     });
 
-    layer.bindTooltip(distName, { sticky: true, direction: 'top' });
+    const tooltipText = showDensityChoropleth 
+      ? `<strong>${distName}</strong><br/>🏥 ${count} Facilities` 
+      : distName;
+    layer.bindTooltip(tooltipText, { sticky: true, direction: 'top' });
   };
 
-  function selectDistrict(distName, layer) {
+  function selectDistrict(distName, layer, count = 0) {
     setSelectedEntity({
       type: 'district',
       name: distName,
-      description: `${distName} is one of the 77 administrative districts in Nepal.`
+      count: count || districtFacilityCounts[distName.toLowerCase().trim()] || 0,
+      description: `${distName} is one of Nepal's 77 administrative districts.`
     });
 
     if (layer && mapRef.current) {
@@ -257,7 +580,7 @@ export default function App() {
     }
   }
 
-  function selectHealthFacility(facility) {
+  const selectHealthFacility = useCallback((facility) => {
     setSelectedEntity({
       type: 'health_facility',
       name: facility.name,
@@ -269,7 +592,7 @@ export default function App() {
     if (isMobile) {
       setCollapsed(true);
     }
-  }
+  }, [isMobile]);
 
   // GPS geolocation lookup
   function locateUser() {
@@ -292,7 +615,11 @@ export default function App() {
         message.success({ content: "GPS Position locked!", key: 'gps-locate', duration: 2 });
 
         if (mapRef.current) {
-          mapRef.current.setView([lat, lng], 15);
+          mapRef.current.setView([lat, lng], 14);
+        }
+
+        if (isRadiusMode) {
+          setRadiusCenter([lat, lng]);
         }
 
         setSelectedEntity({
@@ -306,32 +633,42 @@ export default function App() {
         setGpsLoading(false);
         message.error({ content: `GPS tracking failed: ${error.message}`, key: 'gps-locate', duration: 3 });
       },
-      { enableHighAccuracy: true, timeout: 8000 }
+      { enableHighAccuracy: true, timeout: 10000 }
     );
   }
+
+  // Measurement tool handlers
+  function handleMapClickForMeasure(latlng) {
+    setMeasurePoints(prev => [...prev, latlng]);
+  }
+
+  const totalMeasuredDistance = useMemo(() => {
+    if (measurePoints.length < 2) return 0;
+    let sum = 0;
+    for (let i = 0; i < measurePoints.length - 1; i++) {
+      sum += calculateHaversine(
+        measurePoints[i][0], 
+        measurePoints[i][1], 
+        measurePoints[i+1][0], 
+        measurePoints[i+1][1]
+      );
+    }
+    return sum;
+  }, [measurePoints]);
 
   // Autocomplete search suggestions mapping
   const searchTargets = useMemo(() => {
     const list = [];
-    // Add Districts
     if (districtGeoJson) {
       districtGeoJson.features.forEach(feat => {
         const dist = resolveDistrictName(feat.properties);
         if (dist && !list.some(x => x.value === dist)) {
-          list.push({
-            value: dist,
-            type: 'district'
-          });
+          list.push({ value: dist, type: 'district' });
         }
       });
     }
-    // Add Health Facilities
     healthFacilities.forEach(fac => {
-      list.push({
-        value: fac.name,
-        type: 'facility',
-        meta: fac
-      });
+      list.push({ value: fac.name, type: 'facility', meta: fac });
     });
     return list;
   }, [districtGeoJson, healthFacilities]);
@@ -350,9 +687,11 @@ export default function App() {
       .map(item => ({
         value: item.value,
         label: (
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span>{item.value}</span>
-            <span style={{ fontSize: '0.7rem', color: '#8c8c8c', textTransform: 'uppercase' }}>{item.type}</span>
+            <Tag color={item.type === 'district' ? 'blue' : 'red'} style={{ fontSize: '0.65rem' }}>
+              {item.type.toUpperCase()}
+            </Tag>
           </div>
         ),
         rawData: item
@@ -381,7 +720,7 @@ export default function App() {
           marker.openPopup();
         });
       } else {
-        mapRef.current.setView([item.meta.lat, item.meta.lng], 15);
+        mapRef.current?.setView([item.meta.lat, item.meta.lng], 15);
       }
       selectHealthFacility(item.meta);
     }
@@ -396,48 +735,108 @@ export default function App() {
     let found = null;
     clusterGroupRef.current.eachLayer(layer => {
       const pos = layer.getLatLng();
-      if (pos.lat === lat && pos.lng === lng) {
+      if (Math.abs(pos.lat - lat) < 0.0001 && Math.abs(pos.lng - lng) < 0.0001) {
         found = layer;
       }
     });
     return found;
   }
 
-  // Filter hospitals list in sidebar
-  const filteredHospitals = useMemo(() => {
-    const normalized = hospitalsSearchQuery.toLowerCase().trim();
-    if (!normalized) return healthFacilities;
-    return healthFacilities.filter(h => 
-      h.name.toLowerCase().includes(normalized) || 
-      h.district.toLowerCase().includes(normalized) || 
-      h.type.toLowerCase().includes(normalized)
-    );
-  }, [healthFacilities, hospitalsSearchQuery]);
+  // Export Data Feature (CSV / GeoJSON)
+  function exportData(format = 'csv') {
+    if (filteredFacilities.length === 0) {
+      message.warning("No facilities match the current filters to export.");
+      return;
+    }
+
+    if (format === 'csv') {
+      const headers = ['Name', 'Type', 'District', 'Latitude', 'Longitude', 'Distance_km'];
+      const rows = filteredFacilities.map(f => [
+        `"${(f.name || '').replace(/"/g, '""')}"`,
+        `"${(f.type || '').replace(/"/g, '""')}"`,
+        `"${(f.district || '').replace(/"/g, '""')}"`,
+        f.lat,
+        f.lng,
+        f.distanceKm ? f.distanceKm.toFixed(2) : ''
+      ]);
+      const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `nepal_health_facilities_${Date.now()}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      message.success(`Exported ${filteredFacilities.length} facilities to CSV!`);
+    } else {
+      const geojsonObj = {
+        type: "FeatureCollection",
+        features: filteredFacilities.map(f => ({
+          type: "Feature",
+          properties: {
+            name: f.name,
+            type: f.type,
+            district: f.district
+          },
+          geometry: {
+            type: "Point",
+            coordinates: [f.lng, f.lat]
+          }
+        }))
+      };
+      const blob = new Blob([JSON.stringify(geojsonObj, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `nepal_health_facilities_${Date.now()}.geojson`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      message.success(`Exported ${filteredFacilities.length} facilities to GeoJSON!`);
+    }
+  }
+
+  // Share View URL Link
+  function copyShareLink() {
+    const center = mapRef.current ? mapRef.current.getCenter() : { lat: NEPAL_CENTER[0], lng: NEPAL_CENTER[1] };
+    const zoom = mapRef.current ? mapRef.current.getZoom() : 8;
+    const url = new URL(window.location.href);
+    url.searchParams.set('lat', center.lat.toFixed(4));
+    url.searchParams.set('lng', center.lng.toFixed(4));
+    url.searchParams.set('zoom', zoom.toString());
+    if (selectedEntity && selectedEntity.type === 'health_facility') {
+      url.searchParams.set('facility', selectedEntity.name);
+    }
+    
+    navigator.clipboard.writeText(url.toString());
+    message.success("Shareable map view URL copied to clipboard!");
+  }
 
   return (
     <Layout>
       {/* ----------------------------------------------------
-          SIDEBAR: HOSPITAL SEARCH & LIST
+          SIDEBAR: CONTROLS, FILTERS & LIST
           ---------------------------------------------------- */}
       <Sider width={380} collapsedWidth={0} collapsible collapsed={collapsed} theme="light" trigger={null}>
+        {/* Brand Header */}
         <div className="brand-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <Title className="brand-title" level={3} style={{ margin: 0 }}>
-              <MedicineBoxOutlined style={{ color: '#ef4444' }} /> Hospital Finder
+            <Title className="brand-title" level={4} style={{ margin: 0 }}>
+              <MedicineBoxOutlined style={{ color: '#ef4444' }} /> Nepal Health Map
             </Title>
-            <p className="brand-subtitle">Health Insurance Board (HIB) Nepal</p>
+            <p className="brand-subtitle">Health Insurance Board (HIB) Explorer</p>
           </div>
           <Button 
             type="text" 
             icon={<CloseOutlined />} 
             onClick={() => setCollapsed(true)} 
-            style={{ fontSize: '1.1rem', color: '#595959' }}
+            style={{ fontSize: '1rem', color: '#595959' }}
           />
         </div>
 
         {/* Global Autocomplete */}
         <AutoComplete
-          style={{ width: '100%', marginBottom: 15 }}
+          style={{ width: '100%', marginBottom: 10 }}
           options={autocompleteOptions}
           value={searchVal}
           onSearch={onSearchChange}
@@ -446,13 +845,124 @@ export default function App() {
           allowClear
         />
 
+        {/* Interactive Filtering Panel */}
+        <div className="sidebar-filters-box">
+          <div className="filter-heading">
+            <span><FilterOutlined /> Facility Category</span>
+            <span style={{ fontSize: '0.68rem', color: '#1890ff', cursor: 'pointer' }} onClick={() => {
+              setSelectedTypeFilter('all');
+              setSelectedProvince(null);
+              setSelectedDistrictFilter(null);
+              setHospitalsSearchQuery('');
+            }}>
+              Reset Filters
+            </span>
+          </div>
+
+          <div className="facility-type-chips">
+            <div 
+              className={`type-chip ${selectedTypeFilter === 'all' ? 'active' : ''}`}
+              onClick={() => setSelectedTypeFilter('all')}
+            >
+              All ({healthFacilities.length})
+            </div>
+            <div 
+              className={`type-chip gov ${selectedTypeFilter === 'government' ? 'active' : ''}`}
+              onClick={() => setSelectedTypeFilter('government')}
+            >
+              Govt ({healthFacilities.filter(h => getFacilityCategory(h.type) === 'government').length})
+            </div>
+            <div 
+              className={`type-chip priv ${selectedTypeFilter === 'private' ? 'active' : ''}`}
+              onClick={() => setSelectedTypeFilter('private')}
+            >
+              Private ({healthFacilities.filter(h => getFacilityCategory(h.type) === 'private').length})
+            </div>
+            <div 
+              className={`type-chip comm ${selectedTypeFilter === 'community' ? 'active' : ''}`}
+              onClick={() => setSelectedTypeFilter('community')}
+            >
+              Community ({healthFacilities.filter(h => getFacilityCategory(h.type) === 'community').length})
+            </div>
+            <div 
+              className={`type-chip eye ${selectedTypeFilter === 'eye' ? 'active' : ''}`}
+              onClick={() => setSelectedTypeFilter('eye')}
+            >
+              Eye Care ({healthFacilities.filter(h => getFacilityCategory(h.type) === 'eye').length})
+            </div>
+          </div>
+
+          {/* Cascading Province & District Dropdowns */}
+          <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
+            <Select 
+              placeholder="Province" 
+              size="small" 
+              allowClear 
+              style={{ flex: 1 }}
+              value={selectedProvince}
+              onChange={(val) => {
+                setSelectedProvince(val);
+                setSelectedDistrictFilter(null);
+                if (val && PROVINCE_DATA[val]) {
+                  const pDistricts = PROVINCE_DATA[val].districts;
+                  if (districtLayerRef.current) {
+                    let group = L.featureGroup();
+                    districtLayerRef.current.eachLayer(layer => {
+                      if (pDistricts.some(d => d.toLowerCase() === resolveDistrictName(layer.feature.properties).toLowerCase())) {
+                        group.addLayer(layer);
+                      }
+                    });
+                    if (group.getLayers().length > 0 && mapRef.current) {
+                      mapRef.current.fitBounds(group.getBounds(), { padding: [20, 20] });
+                    }
+                  }
+                }
+              }}
+            >
+              {Object.entries(PROVINCE_DATA).map(([id, prov]) => (
+                <Option key={id} value={parseInt(id)}>{prov.name}</Option>
+              ))}
+            </Select>
+
+            <Select
+              placeholder="District"
+              size="small"
+              allowClear
+              showSearch
+              style={{ flex: 1 }}
+              value={selectedDistrictFilter}
+              onChange={(val) => {
+                setSelectedDistrictFilter(val);
+                if (val && districtLayerRef.current) {
+                  districtLayerRef.current.eachLayer(layer => {
+                    if (resolveDistrictName(layer.feature.properties).toLowerCase() === val.toLowerCase()) {
+                      mapRef.current?.fitBounds(layer.getBounds(), { maxZoom: 11 });
+                      selectDistrict(val, layer);
+                    }
+                  });
+                }
+              }}
+            >
+              {(selectedProvince ? PROVINCE_DATA[selectedProvince].districts : Object.values(PROVINCE_DATA).flatMap(p => p.districts))
+                .sort()
+                .map(d => (
+                  <Option key={d} value={d}>{d}</Option>
+                ))
+              }
+            </Select>
+          </div>
+        </div>
+
         {/* Selected Profile Details Card */}
         {selectedEntity && (
-          <div style={{ marginBottom: 15 }}>
+          <div style={{ marginBottom: 10 }}>
             {selectedEntity.type === 'district' && (
-              <Card size="small" title={<span><GlobalOutlined /> District Boundary</span>} style={{ borderColor: '#d9d9d9' }}>
-                <Title level={5} style={{ margin: 0 }}>{selectedEntity.name}</Title>
-                <Paragraph style={{ color: '#595959', fontSize: '0.8rem', margin: '8px 0 0 0' }}>
+              <Card size="small" title={<span><GlobalOutlined /> District Profile</span>} style={{ borderColor: '#d9d9d9' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Title level={5} style={{ margin: 0 }}>{selectedEntity.name}</Title>
+                  <Tag color="blue">{selectedEntity.count} Hospitals</Tag>
+                </div>
+                <Paragraph style={{ color: '#595959', fontSize: '0.78rem', margin: '6px 0 0 0' }}>
                   {selectedEntity.description}
                 </Paragraph>
               </Card>
@@ -461,27 +971,29 @@ export default function App() {
             {selectedEntity.type === 'health_facility' && (
               <Card 
                 size="small" 
-                title={<span style={{ color: '#ef4444' }}><MedicineBoxOutlined /> Health Facility Profile</span>} 
+                title={<span style={{ color: '#ef4444' }}><MedicineBoxOutlined /> Selected Facility</span>} 
                 style={{ borderColor: '#ef4444' }}
               >
                 <Title level={5} style={{ margin: 0 }}>{selectedEntity.name}</Title>
-                <div style={{ marginTop: 8 }}>
+                <div style={{ marginTop: 6 }}>
                   <div className="detail-row">
-                    <span className="detail-label">Type</span>
-                    <span className="detail-value" style={{ color: '#ef4444' }}>{selectedEntity.facilityType}</span>
+                    <span className="detail-label">Classification</span>
+                    <Tag color={getFacilityMeta(selectedEntity.facilityType).tagColor} style={{ margin: 0 }}>
+                      {selectedEntity.facilityType}
+                    </Tag>
                   </div>
                   <div className="detail-row">
-                    <span class="detail-label">District</span>
+                    <span className="detail-label">District</span>
                     <span className="detail-value">{selectedEntity.district}</span>
                   </div>
                   <div className="detail-row">
                     <span className="detail-label">Coordinates</span>
-                    <span className="detail-value" style={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>
+                    <span className="detail-value" style={{ fontFamily: 'monospace', fontSize: '0.72rem' }}>
                       {selectedEntity.coords[0].toFixed(5)}, {selectedEntity.coords[1].toFixed(5)}
                     </span>
                   </div>
                 </div>
-                <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
                   <Button 
                     type="primary" 
                     danger 
@@ -490,7 +1002,17 @@ export default function App() {
                     onClick={() => mapRef.current?.setView(selectedEntity.coords, 16)}
                     style={{ flex: 1 }}
                   >
-                    Zoom to Map
+                    Zoom
+                  </Button>
+                  <Button 
+                    type="primary" 
+                    size="small" 
+                    icon={<CarOutlined />} 
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${selectedEntity.coords[0]},${selectedEntity.coords[1]}`}
+                    target="_blank"
+                    style={{ flex: 1, background: '#1890ff' }}
+                  >
+                    Directions
                   </Button>
                   <Button 
                     size="small"
@@ -498,9 +1020,8 @@ export default function App() {
                       setSelectedEntity(null);
                       mapRef.current?.setView(NEPAL_CENTER, 7.3);
                     }}
-                    style={{ flex: 1 }}
                   >
-                    Clear Focus
+                    Clear
                   </Button>
                 </div>
               </Card>
@@ -516,59 +1037,92 @@ export default function App() {
                 </div>
                 <div className="detail-row">
                   <span className="detail-label">Accuracy</span>
-                  <span className="detail-value">~{selectedEntity.accuracy.toFixed(1)} meters</span>
+                  <span className="detail-value">~{selectedEntity.accuracy ? selectedEntity.accuracy.toFixed(1) : '10'} meters</span>
                 </div>
               </Card>
             )}
           </div>
         )}
 
-        {/* scrollable Hospitals List */}
+        {/* Scrollable Hospitals List */}
         <div className="hospitals-list-wrapper">
-          <Text strong style={{ display: 'block', marginBottom: 8, fontSize: '0.85rem' }}>
-            Registered Hospitals ({filteredHospitals.length})
-          </Text>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+            <Text strong style={{ fontSize: '0.82rem' }}>
+              Facilities ({filteredFacilities.length})
+            </Text>
+            <Space size={4}>
+              <Tooltip title="Export to CSV">
+                <Button size="small" icon={<DownloadOutlined />} onClick={() => exportData('csv')}>CSV</Button>
+              </Tooltip>
+              <Tooltip title="Export GeoJSON">
+                <Button size="small" onClick={() => exportData('geojson')}>GeoJSON</Button>
+              </Tooltip>
+            </Space>
+          </div>
+
           <Input
-            style={{ marginBottom: 12 }}
-            placeholder="Filter list by name or district..."
+            style={{ marginBottom: 8 }}
+            placeholder="Quick search by name or district..."
             value={hospitalsSearchQuery}
             onChange={(e) => setHospitalsSearchQuery(e.target.value)}
             allowClear
+            size="small"
           />
+
           <div className="hospitals-scroll-list">
-            {filteredHospitals.map((facility) => {
-              const isSelected = selectedEntity && selectedEntity.type === 'health_facility' && selectedEntity.name === facility.name;
-              return (
-                <div 
-                  key={facility.name}
-                  className={`hospital-item-card ${isSelected ? 'selected' : ''}`}
-                  onClick={() => {
-                    mapRef.current?.setView([facility.lat, facility.lng], 15);
-                    const marker = getMarkerByCoords(facility.lat, facility.lng);
-                    if (marker && clusterGroupRef.current) {
-                      clusterGroupRef.current.zoomToShowLayer(marker, () => {
-                        marker.openPopup();
-                      });
-                    }
-                    selectHealthFacility(facility);
-                  }}
-                >
-                  <div className="hospital-item-name">{facility.name}</div>
-                  <div className="hospital-item-meta">
-                    <span><EnvironmentOutlined /> {facility.type} | {facility.district}</span>
-                    <span className="hospital-item-coords">{facility.lat.toFixed(4)}, {facility.lng.toFixed(4)}</span>
+            {filteredFacilities.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '30px 10px', color: '#8c8c8c' }}>
+                <MedicineBoxOutlined style={{ fontSize: '2rem', color: '#d9d9d9', marginBottom: 8 }} />
+                <div>No health facilities found matching your filters.</div>
+              </div>
+            ) : (
+              filteredFacilities.map((facility) => {
+                const isSelected = selectedEntity && selectedEntity.type === 'health_facility' && selectedEntity.name === facility.name;
+                const meta = getFacilityMeta(facility.type);
+
+                return (
+                  <div 
+                    key={facility.name}
+                    className={`hospital-item-card ${isSelected ? 'selected' : ''}`}
+                    onClick={() => {
+                      mapRef.current?.setView([facility.lat, facility.lng], 15);
+                      const marker = getMarkerByCoords(facility.lat, facility.lng);
+                      if (marker && clusterGroupRef.current) {
+                        clusterGroupRef.current.zoomToShowLayer(marker, () => {
+                          marker.openPopup();
+                        });
+                      }
+                      selectHealthFacility(facility);
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div className="hospital-item-name">{facility.name}</div>
+                      {facility.distanceKm != null && (
+                        <span className="distance-badge">{facility.distanceKm.toFixed(1)} km</span>
+                      )}
+                    </div>
+                    <div className="hospital-item-meta">
+                      <span>
+                        <Tag color={meta.tagColor} style={{ fontSize: '0.65rem', padding: '0 4px', lineHeight: '16px', margin: '0 4px 0 0' }}>
+                          {facility.type}
+                        </Tag>
+                        {facility.district}
+                      </span>
+                      <span className="hospital-item-coords">{facility.lat.toFixed(3)}, {facility.lng.toFixed(3)}</span>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
         </div>
       </Sider>
 
       {/* ----------------------------------------------------
-          RIGHT SIDE: STANDARD LEAFLET MAP
+          RIGHT SIDE: LEAFLET MAP & INTERACTIVE CONTROLS
           ---------------------------------------------------- */}
       <Content>
+        {/* Loading overlay for district boundaries */}
         {districtsLoading && (
           <div style={{
             position: 'absolute',
@@ -584,31 +1138,64 @@ export default function App() {
             zIndex: 2000
           }}>
             <Spin size="large" style={{ marginBottom: 12 }} />
-            <Text strong style={{ color: '#1890ff' }}>Loading New official pointed boundaries of Nepal...</Text>
+            <Text strong style={{ color: '#1890ff' }}>Loading official Nepal boundaries and health facilities...</Text>
           </div>
         )}
+
+        {/* Sidebar Hamburger Button (when collapsed) */}
         {collapsed && (
           <button 
             className="sidebar-toggle-btn"
             onClick={() => setCollapsed(false)}
+            title="Open Hospital Search & Filters"
           >
             <MenuOutlined />
           </button>
         )}
+
+        {/* Active Mode Notification Toasts */}
+        {isMeasureMode && (
+          <div className="map-status-toast">
+            <LineOutlined style={{ color: '#1890ff' }} />
+            <span>Click map points to measure distance: <strong>{totalMeasuredDistance.toFixed(2)} km</strong> ({measurePoints.length} points)</span>
+            <Button size="small" danger onClick={() => setMeasurePoints([])} icon={<ClearOutlined />}>Clear</Button>
+            <Button size="small" onClick={() => { setIsMeasureMode(false); setMeasurePoints([]); }}>Done</Button>
+          </div>
+        )}
+
+        {isRadiusMode && (
+          <div className="map-status-toast">
+            <RadarChartOutlined style={{ color: '#52c41a' }} />
+            <span>Click map to set radius center (Radius: <strong>{radiusKm} km</strong>)</span>
+            <Slider 
+              min={5} 
+              max={100} 
+              step={5} 
+              value={radiusKm} 
+              onChange={setRadiusKm} 
+              style={{ width: 100, margin: '0 8px' }} 
+            />
+            <Button size="small" onClick={() => setIsRadiusMode(false)}>Close</Button>
+          </div>
+        )}
+
+        {/* Main Leaflet Map */}
         <MapContainer
           center={NEPAL_CENTER}
           zoom={7.3}
           minZoom={6}
-          maxZoom={16}
+          maxZoom={18}
           maxBounds={NEPAL_BOUNDS}
           maxBoundsViscosity={0.8}
           zoomControl={false}
           renderer={L.canvas()}
         >
-          {/* CartoDB Voyager Light Basemap */}
+          {/* Active Basemap Layer */}
           <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-            attribution='&copy; <a href="https://carto.com/">CARTO</a> &copy; OpenStreetMap contributors'
+            key={currentBasemap}
+            url={BASEMAPS[currentBasemap].url}
+            attribution={BASEMAPS[currentBasemap].attribution}
+            maxZoom={BASEMAPS[currentBasemap].maxZoom}
           />
 
           <ScaleControl position="bottomright" imperial={false} />
@@ -617,6 +1204,10 @@ export default function App() {
             mapRef={mapRef}
             setMouseCoords={setMouseCoords}
             districtLayerRef={districtLayerRef}
+            isMeasureMode={isMeasureMode}
+            onMapClickForMeasure={handleMapClickForMeasure}
+            isRadiusMode={isRadiusMode}
+            setRadiusCenter={setRadiusCenter}
           />
 
           {/* District boundaries GeoJSON layer */}
@@ -626,18 +1217,19 @@ export default function App() {
               style={getDistrictStyle}
               onEachFeature={onEachDistrict}
               ref={districtLayerRef}
-              key={`districts-${selectedEntity?.name || 'none'}`}
+              key={`districts-${showDensityChoropleth ? 'density' : 'normal'}-${selectedEntity?.name || 'none'}`}
             />
           )}
 
-          {/* Clustered hospital pins */}
+          {/* Clustered Health Facilities layer */}
           <HealthFacilitiesClusterLayer
-            facilities={healthFacilities}
+            facilities={filteredFacilities}
             onSelect={selectHealthFacility}
             clusterGroupRef={clusterGroupRef}
+            userPosition={userPosition}
           />
 
-          {/* GPS Location marker */}
+          {/* GPS Location marker & accuracy circle */}
           {userPosition && (
             <>
               <Marker
@@ -673,11 +1265,76 @@ export default function App() {
               )}
             </>
           )}
+
+          {/* Proximity / Radius Circle */}
+          {isRadiusMode && radiusCenter && (
+            <>
+              <Marker position={radiusCenter} />
+              <Circle
+                center={radiusCenter}
+                radius={radiusKm * 1000}
+                pathOptions={{
+                  color: '#52c41a',
+                  fillColor: '#52c41a',
+                  fillOpacity: 0.08,
+                  weight: 2,
+                  dashArray: '6, 6'
+                }}
+              />
+            </>
+          )}
+
+          {/* Measurement Distance Line */}
+          {isMeasureMode && measurePoints.length > 0 && (
+            <>
+              <Polyline 
+                positions={measurePoints} 
+                pathOptions={{ color: '#f5222d', weight: 3, dashArray: '5, 5' }} 
+              />
+              {measurePoints.map((pt, idx) => (
+                <Marker 
+                  key={idx} 
+                  position={pt} 
+                  icon={L.divIcon({
+                    html: `<div style="width:10px;height:10px;background:#f5222d;border:2px solid white;border-radius:50%;"></div>`,
+                    iconSize: [10, 10],
+                    iconAnchor: [5, 5]
+                  })}
+                />
+              ))}
+            </>
+          )}
         </MapContainer>
 
-        {/* Floating actions HUD */}
+        {/* Floating Tool Controls Bar */}
         <div className="map-floating-bar">
-          <Tooltip title="Zoom to my position (GPS)" placement="left">
+          {/* Basemap Switcher Popover */}
+          <Popover 
+            placement="leftTop" 
+            title="Choose Basemap" 
+            trigger="click"
+            content={
+              <div className="basemap-picker-grid">
+                {Object.entries(BASEMAPS).map(([key, bm]) => (
+                  <div 
+                    key={key} 
+                    className={`basemap-option ${currentBasemap === key ? 'selected' : ''}`}
+                    onClick={() => setCurrentBasemap(key)}
+                  >
+                    <div>{bm.name.split(' ')[0]}</div>
+                    <div style={{ fontSize: '0.65rem', color: '#8c8c8c' }}>{bm.name.includes('(') ? bm.name.split('(')[1].replace(')', '') : ''}</div>
+                  </div>
+                ))}
+              </div>
+            }
+          >
+            <button className="floating-bar-btn" title="Change Basemap">
+              <BgColorsOutlined />
+            </button>
+          </Popover>
+
+          {/* GPS Locate Button */}
+          <Tooltip title="Lock My GPS Position" placement="left">
             <button 
               className={`floating-bar-btn ${gpsLoading ? 'active' : ''}`}
               onClick={locateUser}
@@ -686,8 +1343,48 @@ export default function App() {
               {gpsLoading ? <Spin size="small" /> : <AimOutlined />}
             </button>
           </Tooltip>
-          
-          <Tooltip title="Fit Nepal Bounds" placement="left">
+
+          {/* Radius / Near Me Mode Toggle */}
+          <Tooltip title="Proximity / Near Me Radius Finder" placement="left">
+            <button 
+              className={`floating-bar-btn ${isRadiusMode ? 'active' : ''}`}
+              onClick={() => {
+                const next = !isRadiusMode;
+                setIsRadiusMode(next);
+                if (next && !radiusCenter) {
+                  setRadiusCenter(userPosition || NEPAL_CENTER);
+                }
+              }}
+            >
+              <RadarChartOutlined />
+            </button>
+          </Tooltip>
+
+          {/* District Density Choropleth Toggle */}
+          <Tooltip title="Toggle Hospital Density Choropleth" placement="left">
+            <button 
+              className={`floating-bar-btn ${showDensityChoropleth ? 'active' : ''}`}
+              onClick={() => setShowDensityChoropleth(!showDensityChoropleth)}
+            >
+              <GlobalOutlined />
+            </button>
+          </Tooltip>
+
+          {/* Distance Ruler Measurement Mode */}
+          <Tooltip title="Measure Distance Tool" placement="left">
+            <button 
+              className={`floating-bar-btn ${isMeasureMode ? 'active' : ''}`}
+              onClick={() => {
+                setIsMeasureMode(!isMeasureMode);
+                setMeasurePoints([]);
+              }}
+            >
+              <LineOutlined />
+            </button>
+          </Tooltip>
+
+          {/* Reset / Fit Nepal Bounds */}
+          <Tooltip title="Fit Full Nepal Bounds" placement="left">
             <button 
               className="floating-bar-btn"
               onClick={() => {
@@ -698,7 +1395,34 @@ export default function App() {
               <CompassOutlined />
             </button>
           </Tooltip>
+
+          {/* Share View URL */}
+          <Tooltip title="Share Map View" placement="left">
+            <button className="floating-bar-btn" onClick={copyShareLink}>
+              <ShareAltOutlined />
+            </button>
+          </Tooltip>
         </div>
+
+        {/* Choropleth Legend (visible when density mode is enabled) */}
+        {showDensityChoropleth && (
+          <div className="choropleth-legend">
+            <div className="choropleth-legend-title">Hospitals per District</div>
+            <div className="choropleth-scale">
+              <div className="choropleth-swatch" style={{ background: '#f0f0f0' }} title="0" />
+              <div className="choropleth-swatch" style={{ background: '#bae7ff' }} title="1-5" />
+              <div className="choropleth-swatch" style={{ background: '#69c0ff' }} title="6-10" />
+              <div className="choropleth-swatch" style={{ background: '#1890ff' }} title="11-20" />
+              <div className="choropleth-swatch" style={{ background: '#096dd9' }} title="21-35" />
+              <div className="choropleth-swatch" style={{ background: '#003a8c' }} title="35+" />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: '#8c8c8c', marginTop: 3 }}>
+              <span>0</span>
+              <span>10</span>
+              <span>35+</span>
+            </div>
+          </div>
+        )}
 
         {/* Real-time coordinates HUD display */}
         <div id="coordinates-display">
