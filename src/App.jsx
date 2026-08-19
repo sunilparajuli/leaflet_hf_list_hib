@@ -13,7 +13,8 @@ import {
   Tag,
   Slider,
   Popover,
-  Space
+  Space,
+  Radio
 } from 'antd';
 import { 
   AimOutlined, 
@@ -31,7 +32,9 @@ import {
   DownloadOutlined,
   ShareAltOutlined,
   CarOutlined,
-  ClearOutlined
+  ClearOutlined,
+  ThunderboltOutlined,
+  ArrowRightOutlined
 } from '@ant-design/icons';
 import { 
   MapContainer, 
@@ -208,14 +211,12 @@ function HealthFacilitiesClusterLayer({ facilities, onSelect, clusterGroupRef, u
   useEffect(() => {
     if (!map) return;
 
-    // Clean previous group
     if (clusterGroupRef.current && map.hasLayer(clusterGroupRef.current)) {
       map.removeLayer(clusterGroupRef.current);
     }
 
     if (!facilities || facilities.length === 0) return;
 
-    // Custom cluster icons with proportions & sizes
     const clusterGroup = L.markerClusterGroup({
       showCoverageOnHover: true,
       zoomToBoundsOnClick: true,
@@ -377,6 +378,11 @@ export default function App() {
   const [userAccuracy, setUserAccuracy] = useState(null);
   const [gpsLoading, setGpsLoading] = useState(false);
 
+  // Dedicated "Nearby Hospitals" Mode
+  const [nearestHospital, setNearestHospital] = useState(null);
+  const [filterNearMeOnly, setFilterNearMeOnly] = useState(false);
+  const [nearMeRadiusMax, setNearMeRadiusMax] = useState(30); // in km
+
   // Window resize listener
   useEffect(() => {
     const handleResize = () => {
@@ -450,7 +456,7 @@ export default function App() {
     return counts;
   }, [healthFacilities]);
 
-  // Filtered facilities based on: Type + Province + District + Search + Radius Proximity
+  // Filtered facilities based on: Type + Province + District + Search + Radius Proximity + Near Me
   const filteredFacilities = useMemo(() => {
     return healthFacilities.filter(fac => {
       if (selectedTypeFilter !== 'all') {
@@ -484,9 +490,14 @@ export default function App() {
         if (dist > radiusKm) return false;
       }
 
+      if (filterNearMeOnly && userPosition) {
+        const dist = calculateHaversine(userPosition[0], userPosition[1], fac.lat, fac.lng);
+        if (dist > nearMeRadiusMax) return false;
+      }
+
       return true;
     }).map(fac => {
-      const refPoint = radiusCenter || userPosition;
+      const refPoint = userPosition || radiusCenter;
       const distanceKm = refPoint ? calculateHaversine(refPoint[0], refPoint[1], fac.lat, fac.lng) : null;
       return { ...fac, distanceKm };
     }).sort((a, b) => {
@@ -504,7 +515,9 @@ export default function App() {
     isRadiusMode, 
     radiusCenter, 
     radiusKm, 
-    userPosition
+    userPosition,
+    filterNearMeOnly,
+    nearMeRadiusMax
   ]);
 
   // Standard or Choropleth district styles
@@ -532,7 +545,6 @@ export default function App() {
     };
   }
 
-  // Handle District clicks & hovers
   const onEachDistrict = (feature, layer) => {
     const distName = resolveDistrictName(feature.properties);
     const count = districtFacilityCounts[distName.toLowerCase().trim()] || 0;
@@ -595,14 +607,14 @@ export default function App() {
   }, [isMobile]);
 
   // GPS geolocation lookup
-  function locateUser() {
+  function locateUser(callback) {
     if (!navigator.geolocation) {
       message.error("Geolocation is not supported by your browser.");
       return;
     }
 
     setGpsLoading(true);
-    message.loading({ content: "Locking GPS location...", key: 'gps-locate', duration: 0 });
+    message.loading({ content: "Detecting your current GPS location...", key: 'gps-locate', duration: 0 });
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -612,11 +624,7 @@ export default function App() {
         setUserPosition([lat, lng]);
         setUserAccuracy(position.coords.accuracy);
         setGpsLoading(false);
-        message.success({ content: "GPS Position locked!", key: 'gps-locate', duration: 2 });
-
-        if (mapRef.current) {
-          mapRef.current.setView([lat, lng], 14);
-        }
+        message.success({ content: "GPS Position acquired!", key: 'gps-locate', duration: 2 });
 
         if (isRadiusMode) {
           setRadiusCenter([lat, lng]);
@@ -628,13 +636,65 @@ export default function App() {
           lng: lng,
           accuracy: position.coords.accuracy
         });
+
+        if (callback) {
+          callback([lat, lng]);
+        } else if (mapRef.current) {
+          mapRef.current.setView([lat, lng], 14);
+        }
       },
       (error) => {
         setGpsLoading(false);
-        message.error({ content: `GPS tracking failed: ${error.message}`, key: 'gps-locate', duration: 3 });
+        message.error({ content: `GPS location failed: ${error.message}`, key: 'gps-locate', duration: 3 });
       },
       { enableHighAccuracy: true, timeout: 10000 }
     );
+  }
+
+  // ----------------------------------------------------
+  // "FIND NEARBY HOSPITALS FROM MY LOCATION" ACTION
+  // ----------------------------------------------------
+  function findNearbyHospitalsFromMyLocation() {
+    const proceedWithPos = (pos) => {
+      if (!healthFacilities || healthFacilities.length === 0) return;
+
+      // Find closest facility
+      let closest = null;
+      let minDistance = Infinity;
+
+      healthFacilities.forEach(f => {
+        const dist = calculateHaversine(pos[0], pos[1], f.lat, f.lng);
+        if (dist < minDistance) {
+          minDistance = dist;
+          closest = { ...f, distanceKm: dist };
+        }
+      });
+
+      if (closest) {
+        setNearestHospital(closest);
+        setFilterNearMeOnly(true);
+        setCollapsed(false); // Open sidebar to display nearest hospital options
+
+        // Fit map bounds to show both user position and closest hospital
+        if (mapRef.current) {
+          const bounds = L.latLngBounds([pos, [closest.lat, closest.lng]]);
+          mapRef.current.fitBounds(bounds, { padding: [80, 80], maxZoom: 15 });
+        }
+
+        message.success({
+          content: `Nearest: ${closest.name} (${closest.distanceKm.toFixed(1)} km away)`,
+          duration: 4
+        });
+      }
+    };
+
+    if (userPosition) {
+      proceedWithPos(userPosition);
+    } else {
+      locateUser((pos) => {
+        proceedWithPos(pos);
+      });
+    }
   }
 
   // Measurement tool handlers
@@ -834,6 +894,26 @@ export default function App() {
           />
         </div>
 
+        {/* Prominent "Find Hospitals Near Me" Action Bar */}
+        <div style={{ marginBottom: 10 }}>
+          <Button 
+            type="primary" 
+            danger 
+            block 
+            icon={<ThunderboltOutlined />}
+            loading={gpsLoading}
+            onClick={findNearbyHospitalsFromMyLocation}
+            style={{ 
+              height: 38, 
+              fontWeight: 600, 
+              borderRadius: 6,
+              boxShadow: '0 2px 6px rgba(239, 68, 68, 0.25)' 
+            }}
+          >
+            Locate Nearby Hospitals from My Location
+          </Button>
+        </div>
+
         {/* Global Autocomplete */}
         <AutoComplete
           style={{ width: '100%', marginBottom: 10 }}
@@ -845,6 +925,54 @@ export default function App() {
           allowClear
         />
 
+        {/* Near Me Active Filter Header Banner */}
+        {filterNearMeOnly && userPosition && (
+          <div style={{
+            background: '#fff1f0',
+            border: '1px solid #ffa39e',
+            borderRadius: 6,
+            padding: '8px 10px',
+            marginBottom: 10,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 6
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#cf1322' }}>
+                <AimOutlined /> Nearby Mode Active (Sorted by Distance)
+              </span>
+              <Button 
+                type="link" 
+                size="small" 
+                danger 
+                onClick={() => {
+                  setFilterNearMeOnly(false);
+                  setNearestHospital(null);
+                }}
+                style={{ padding: 0, height: 'auto', fontSize: '0.72rem' }}
+              >
+                Clear Near Me
+              </Button>
+            </div>
+            
+            {/* Quick Radius Filter for Near Me */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.72rem' }}>
+              <span style={{ color: '#595959' }}>Within:</span>
+              <Radio.Group 
+                size="small" 
+                value={nearMeRadiusMax} 
+                onChange={(e) => setNearMeRadiusMax(e.target.value)}
+                buttonStyle="solid"
+              >
+                <Radio.Button value={10}>10 km</Radio.Button>
+                <Radio.Button value={25}>25 km</Radio.Button>
+                <Radio.Button value={50}>50 km</Radio.Button>
+                <Radio.Button value={9999}>All</Radio.Button>
+              </Radio.Group>
+            </div>
+          </div>
+        )}
+
         {/* Interactive Filtering Panel */}
         <div className="sidebar-filters-box">
           <div className="filter-heading">
@@ -854,8 +982,10 @@ export default function App() {
               setSelectedProvince(null);
               setSelectedDistrictFilter(null);
               setHospitalsSearchQuery('');
+              setFilterNearMeOnly(false);
+              setNearestHospital(null);
             }}>
-              Reset Filters
+              Reset All
             </span>
           </div>
 
@@ -992,6 +1122,14 @@ export default function App() {
                       {selectedEntity.coords[0].toFixed(5)}, {selectedEntity.coords[1].toFixed(5)}
                     </span>
                   </div>
+                  {userPosition && (
+                    <div className="detail-row">
+                      <span className="detail-label">Distance from you</span>
+                      <span className="detail-value" style={{ color: '#52c41a' }}>
+                        {calculateHaversine(userPosition[0], userPosition[1], selectedEntity.coords[0], selectedEntity.coords[1]).toFixed(1)} km
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
                   <Button 
@@ -1008,7 +1146,7 @@ export default function App() {
                     type="primary" 
                     size="small" 
                     icon={<CarOutlined />} 
-                    href={`https://www.google.com/maps/dir/?api=1&destination=${selectedEntity.coords[0]},${selectedEntity.coords[1]}`}
+                    href={`https://www.google.com/maps/dir/?api=1${userPosition ? `&origin=${userPosition[0]},${userPosition[1]}` : ''}&destination=${selectedEntity.coords[0]},${selectedEntity.coords[1]}`}
                     target="_blank"
                     style={{ flex: 1, background: '#1890ff' }}
                   >
@@ -1048,7 +1186,7 @@ export default function App() {
         <div className="hospitals-list-wrapper">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
             <Text strong style={{ fontSize: '0.82rem' }}>
-              Facilities ({filteredFacilities.length})
+              {filterNearMeOnly ? `Nearby Hospitals (${filteredFacilities.length})` : `Facilities (${filteredFacilities.length})`}
             </Text>
             <Space size={4}>
               <Tooltip title="Export to CSV">
@@ -1073,17 +1211,18 @@ export default function App() {
             {filteredFacilities.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '30px 10px', color: '#8c8c8c' }}>
                 <MedicineBoxOutlined style={{ fontSize: '2rem', color: '#d9d9d9', marginBottom: 8 }} />
-                <div>No health facilities found matching your filters.</div>
+                <div>No health facilities found matching your criteria.</div>
               </div>
             ) : (
-              filteredFacilities.map((facility) => {
+              filteredFacilities.map((facility, index) => {
                 const isSelected = selectedEntity && selectedEntity.type === 'health_facility' && selectedEntity.name === facility.name;
+                const isClosest = nearestHospital && nearestHospital.name === facility.name;
                 const meta = getFacilityMeta(facility.type);
 
                 return (
                   <div 
                     key={facility.name}
-                    className={`hospital-item-card ${isSelected ? 'selected' : ''}`}
+                    className={`hospital-item-card ${isSelected ? 'selected' : ''} ${isClosest ? 'closest-highlight' : ''}`}
                     onClick={() => {
                       mapRef.current?.setView([facility.lat, facility.lng], 15);
                       const marker = getMarkerByCoords(facility.lat, facility.lng);
@@ -1096,7 +1235,10 @@ export default function App() {
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div className="hospital-item-name">{facility.name}</div>
+                      <div className="hospital-item-name">
+                        {isClosest && <Tag color="error" style={{ fontSize: '0.62rem', padding: '0 4px', marginRight: 4 }}>CLOSEST</Tag>}
+                        {facility.name}
+                      </div>
                       {facility.distanceKm != null && (
                         <span className="distance-badge">{facility.distanceKm.toFixed(1)} km</span>
                       )}
@@ -1179,6 +1321,27 @@ export default function App() {
           </div>
         )}
 
+        {/* Floating Nearest Hospital Alert Banner */}
+        {nearestHospital && userPosition && (
+          <div className="map-status-toast" style={{ borderColor: '#ff4d4f', background: '#fff1f0' }}>
+            <MedicineBoxOutlined style={{ color: '#ef4444', fontSize: '1.1rem' }} />
+            <span>
+              Nearest Hospital: <strong>{nearestHospital.name}</strong> (~{nearestHospital.distanceKm.toFixed(1)} km)
+            </span>
+            <Button 
+              size="small" 
+              type="primary" 
+              danger 
+              icon={<CarOutlined />}
+              href={`https://www.google.com/maps/dir/?api=1&origin=${userPosition[0]},${userPosition[1]}&destination=${nearestHospital.lat},${nearestHospital.lng}`}
+              target="_blank"
+            >
+              Directions
+            </Button>
+            <Button size="small" onClick={() => setNearestHospital(null)}>Dismiss</Button>
+          </div>
+        )}
+
         {/* Main Leaflet Map */}
         <MapContainer
           center={NEPAL_CENTER}
@@ -1237,16 +1400,19 @@ export default function App() {
                 icon={L.divIcon({
                   className: 'gps-user-marker-container',
                   html: `
-                    <div style="position:relative; width:22px; height:22px; display:flex; align-items:center; justify-content:center;">
-                      <div style="position:absolute; width:16px; height:16px; border-radius:50%; background:#1890ff; border:2px solid #ffffff; box-shadow:0 0 8px rgba(0,0,0,0.3); z-index:2;"></div>
+                    <div style="position:relative; width:26px; height:26px; display:flex; align-items:center; justify-content:center;">
+                      <div class="user-pulse-wave"></div>
+                      <div style="position:absolute; width:14px; height:14px; border-radius:50%; background:#1890ff; border:2.5px solid #ffffff; box-shadow:0 0 10px rgba(24,144,255,0.8); z-index:2;"></div>
                     </div>
                   `,
-                  iconSize: [22, 22],
-                  iconAnchor: [11, 11]
+                  iconSize: [26, 26],
+                  iconAnchor: [13, 13]
                 })}
               >
                 <Popup closeButton={false}>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 600 }}>Your Location</div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 600 }}>
+                    <AimOutlined style={{ color: '#1890ff' }} /> Your GPS Location
+                  </div>
                 </Popup>
               </Marker>
               
@@ -1264,6 +1430,18 @@ export default function App() {
                 />
               )}
             </>
+          )}
+
+          {/* Direct Line to Nearest Hospital */}
+          {userPosition && nearestHospital && (
+            <Polyline
+              positions={[userPosition, [nearestHospital.lat, nearestHospital.lng]]}
+              pathOptions={{
+                color: '#ef4444',
+                weight: 3,
+                dashArray: '6, 6'
+              }}
+            />
           )}
 
           {/* Proximity / Radius Circle */}
@@ -1308,6 +1486,17 @@ export default function App() {
 
         {/* Floating Tool Controls Bar */}
         <div className="map-floating-bar">
+          {/* Quick Find Nearest Hospital Button */}
+          <Tooltip title="Find Nearest Hospitals to Me" placement="left">
+            <button 
+              className={`floating-bar-btn ${filterNearMeOnly ? 'active' : ''}`}
+              onClick={findNearbyHospitalsFromMyLocation}
+              style={{ color: '#ef4444' }}
+            >
+              <ThunderboltOutlined />
+            </button>
+          </Tooltip>
+
           {/* Basemap Switcher Popover */}
           <Popover 
             placement="leftTop" 
@@ -1337,7 +1526,7 @@ export default function App() {
           <Tooltip title="Lock My GPS Position" placement="left">
             <button 
               className={`floating-bar-btn ${gpsLoading ? 'active' : ''}`}
-              onClick={locateUser}
+              onClick={() => locateUser()}
               disabled={gpsLoading}
             >
               {gpsLoading ? <Spin size="small" /> : <AimOutlined />}
@@ -1389,6 +1578,8 @@ export default function App() {
               className="floating-bar-btn"
               onClick={() => {
                 setSelectedEntity(null);
+                setNearestHospital(null);
+                setFilterNearMeOnly(false);
                 mapRef.current?.setView(NEPAL_CENTER, 7.3);
               }}
             >
