@@ -141,7 +141,7 @@ export default function App() {
 
   // Responsive states
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [collapsed, setCollapsed] = useState(window.innerWidth <= 768);
+  const [collapsed, setCollapsed] = useState(true);
 
   // Geolocation states
   const [userPosition, setUserPosition] = useState(null);
@@ -155,8 +155,6 @@ export default function App() {
       setIsMobile(mobile);
       if (mobile) {
         setCollapsed(true);
-      } else {
-        setCollapsed(false);
       }
     };
     window.addEventListener('resize', handleResize);
