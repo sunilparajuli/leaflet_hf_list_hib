@@ -34,7 +34,7 @@ import {
   CarOutlined,
   ClearOutlined,
   ThunderboltOutlined,
-  ArrowRightOutlined
+  EyeOutlined
 } from '@ant-design/icons';
 import { 
   MapContainer, 
@@ -359,6 +359,7 @@ export default function App() {
   // Map Basemap & Thematic Layers
   const [currentBasemap, setCurrentBasemap] = useState('voyager');
   const [showDensityChoropleth, setShowDensityChoropleth] = useState(false);
+  const [shadeOutsideNepal, setShadeOutsideNepal] = useState(true); // Default: Focus Nepal with world shaded grey
 
   // Proximity / Radius Filter Mode
   const [isRadiusMode, setIsRadiusMode] = useState(false);
@@ -381,7 +382,7 @@ export default function App() {
   // Dedicated "Nearby Hospitals" Mode
   const [nearestHospital, setNearestHospital] = useState(null);
   const [filterNearMeOnly, setFilterNearMeOnly] = useState(false);
-  const [nearMeRadiusMax, setNearMeRadiusMax] = useState(30); // in km
+  const [nearMeRadiusMax, setNearMeRadiusMax] = useState(30);
 
   // Window resize listener
   useEffect(() => {
@@ -425,6 +426,30 @@ export default function App() {
       })
       .catch(() => message.error("Failed to load hospital listings."));
   }, []);
+
+  // Compute World Mask (Spotlight Nepal by cutting holes for all district polygons)
+  const worldMaskGeoJson = useMemo(() => {
+    if (!districtGeoJson || !districtGeoJson.features) return null;
+    const worldBox = [
+      [-180, -90],
+      [180, -90],
+      [180, 90],
+      [-180, 90],
+      [-180, -90]
+    ];
+    const holes = districtGeoJson.features.map(f => f.geometry.coordinates[0]);
+    return {
+      type: 'FeatureCollection',
+      features: [{
+        type: 'Feature',
+        properties: { name: 'World Mask' },
+        geometry: {
+          type: 'Polygon',
+          coordinates: [worldBox, ...holes]
+        }
+      }]
+    };
+  }, [districtGeoJson]);
 
   // Check URL params on startup for deep linking
   useEffect(() => {
@@ -651,14 +676,11 @@ export default function App() {
     );
   }
 
-  // ----------------------------------------------------
-  // "FIND NEARBY HOSPITALS FROM MY LOCATION" ACTION
-  // ----------------------------------------------------
+  // "Find Nearby Hospitals from My Location" Action
   function findNearbyHospitalsFromMyLocation() {
     const proceedWithPos = (pos) => {
       if (!healthFacilities || healthFacilities.length === 0) return;
 
-      // Find closest facility
       let closest = null;
       let minDistance = Infinity;
 
@@ -673,9 +695,8 @@ export default function App() {
       if (closest) {
         setNearestHospital(closest);
         setFilterNearMeOnly(true);
-        setCollapsed(false); // Open sidebar to display nearest hospital options
+        setCollapsed(false);
 
-        // Fit map bounds to show both user position and closest hospital
         if (mapRef.current) {
           const bounds = L.latLngBounds([pos, [closest.lat, closest.lng]]);
           mapRef.current.fitBounds(bounds, { padding: [80, 80], maxZoom: 15 });
@@ -1214,7 +1235,7 @@ export default function App() {
                 <div>No health facilities found matching your criteria.</div>
               </div>
             ) : (
-              filteredFacilities.map((facility, index) => {
+              filteredFacilities.map((facility) => {
                 const isSelected = selectedEntity && selectedEntity.type === 'health_facility' && selectedEntity.name === facility.name;
                 const isClosest = nearestHospital && nearestHospital.name === facility.name;
                 const meta = getFacilityMeta(facility.type);
@@ -1373,6 +1394,21 @@ export default function App() {
             setRadiusCenter={setRadiusCenter}
           />
 
+          {/* World Shade / Nepal Spotlight Mask Layer */}
+          {shadeOutsideNepal && worldMaskGeoJson && (
+            <GeoJSON
+              data={worldMaskGeoJson}
+              style={{
+                fillColor: '#1e293b', // Deep slate grey mask
+                fillOpacity: 0.62,
+                weight: 1,
+                color: '#334155',
+                stroke: false
+              }}
+              key="nepal-world-mask-layer"
+            />
+          )}
+
           {/* District boundaries GeoJSON layer */}
           {districtGeoJson && (
             <GeoJSON
@@ -1494,6 +1530,19 @@ export default function App() {
               style={{ color: '#ef4444' }}
             >
               <ThunderboltOutlined />
+            </button>
+          </Tooltip>
+
+          {/* Shade Outside Nepal / Focus Spotlight Toggle */}
+          <Tooltip title={shadeOutsideNepal ? "Unshade Outside Nepal (Show Full World)" : "Shade Outside Nepal (Focus Nepal)"} placement="left">
+            <button 
+              className={`floating-bar-btn ${shadeOutsideNepal ? 'active' : ''}`}
+              onClick={() => {
+                setShadeOutsideNepal(!shadeOutsideNepal);
+                message.info(!shadeOutsideNepal ? "Shading rest of the world (Focusing Nepal)" : "Full map view enabled");
+              }}
+            >
+              <EyeOutlined />
             </button>
           </Tooltip>
 
