@@ -1,7 +1,25 @@
-/* Nepal Map React Explorer - Paisa (paisa.fyi) Clean Minimal Theme */
+/* Nepal Map React Explorer - Paisa (paisa.fyi) Clean Minimal Theme (Red & Green Palette) */
 
 :root {
-  /* Paisa / Tailwind Slate Palette Tokens */
+  /* Paisa Red & Green + Slate Palette Tokens */
+  --paisa-red: #dc2626;
+  --paisa-red-hover: #b91c1c;
+  --paisa-red-light: #fef2f2;
+  --paisa-red-border: #fecaca;
+
+  --paisa-green: #16a34a;
+  --paisa-green-hover: #15803d;
+  --paisa-green-light: #f0fdf4;
+  --paisa-green-border: #bbf7d0;
+
+  --paisa-blue: #2563eb;
+  --paisa-blue-light: #eff6ff;
+  --paisa-blue-border: #bfdbfe;
+
+  --paisa-amber: #d97706;
+  --paisa-amber-light: #fffbeb;
+  --paisa-amber-border: #fde68a;
+
   --slate-50: #f8fafc;
   --slate-100: #f1f5f9;
   --slate-200: #e2e8f0;
@@ -13,30 +31,13 @@
   --slate-800: #1e293b;
   --slate-900: #0f172a;
 
-  /* Primary & Accent Tones */
-  --primary: #4f46e5;
-  --primary-hover: #4338ca;
-  --primary-light: #eef2ff;
-  --primary-border: #c7d2fe;
-  
-  --emerald: #059669;
-  --emerald-light: #ecfdf5;
-  --emerald-border: #a7f3d0;
-  
-  --violet: #7c3aed;
-  --violet-light: #faf5ff;
-  --violet-border: #e9d5ff;
+  --primary: var(--paisa-red);
+  --primary-hover: var(--paisa-red-hover);
+  --primary-light: var(--paisa-red-light);
+  --primary-border: var(--paisa-red-border);
 
-  --amber: #d97706;
-  --amber-light: #fffbeb;
-  --amber-border: #fde68a;
-
-  --rose: #e11d48;
-  --rose-light: #fff1f2;
-  --rose-border: #fecdd3;
-
-  --card-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.05);
-  --floating-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.08), 0 2px 6px -2px rgba(15, 23, 42, 0.04);
+  --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  --floating-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.08), 0 2px 6px -2px rgba(15, 23, 42, 0.04);
   --popup-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.12), 0 8px 10px -6px rgba(15, 23, 42, 0.08);
 
   --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -99,24 +100,24 @@
   letter-spacing: 0.01em;
 }
 
-/* Primary Locate Button */
+/* Primary Locate Button - Vibrant Paisa Red Action */
 .locate-main-btn {
   height: 38px !important;
-  background-color: var(--primary) !important;
-  border-color: var(--primary) !important;
+  background-color: var(--paisa-red) !important;
+  border-color: var(--paisa-red) !important;
   color: #ffffff !important;
   font-weight: 600 !important;
   font-size: 0.8rem !important;
   border-radius: 8px !important;
-  box-shadow: 0 1px 2px rgba(79, 70, 229, 0.2) !important;
+  box-shadow: 0 1px 2px rgba(220, 38, 38, 0.2) !important;
   transition: var(--transition) !important;
 }
 
 .locate-main-btn:hover {
-  background-color: var(--primary-hover) !important;
-  border-color: var(--primary-hover) !important;
+  background-color: var(--paisa-red-hover) !important;
+  border-color: var(--paisa-red-hover) !important;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25) !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25) !important;
 }
 
 /* Search input Paisa styling */
@@ -133,8 +134,8 @@
 .ant-input:focus,
 .ant-input-affix-wrapper-focused,
 .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
-  border-color: var(--primary) !important;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12) !important;
+  border-color: var(--paisa-red) !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
 }
 
 /* Filter Controls Section in Sidebar */
@@ -192,63 +193,67 @@
   font-weight: 600;
 }
 
+/* Govt: Paisa Red */
 .type-chip.gov {
-  color: #047857;
-  border-color: var(--emerald-border);
-  background: var(--emerald-light);
+  color: var(--paisa-red);
+  border-color: var(--paisa-red-border);
+  background: var(--paisa-red-light);
 }
 .type-chip.gov:hover {
-  background: #d1fae5;
-  border-color: #6ee7b7;
+  background: #fee2e2;
+  border-color: #fca5a5;
 }
 .type-chip.gov.active {
-  background: #059669;
-  border-color: #059669;
+  background: var(--paisa-red);
+  border-color: var(--paisa-red);
   color: #ffffff;
 }
 
-.type-chip.priv {
-  color: #6b21a8;
-  border-color: var(--violet-border);
-  background: var(--violet-light);
-}
-.type-chip.priv:hover {
-  background: #f3e8ff;
-  border-color: #d8b4fe;
-}
-.type-chip.priv.active {
-  background: #7c3aed;
-  border-color: #7c3aed;
-  color: #ffffff;
-}
-
+/* Community / PHC: Paisa Green */
 .type-chip.comm {
-  color: #3730a3;
-  border-color: var(--primary-border);
-  background: var(--primary-light);
+  color: var(--paisa-green);
+  border-color: var(--paisa-green-border);
+  background: var(--paisa-green-light);
 }
 .type-chip.comm:hover {
-  background: #e0e7ff;
-  border-color: #a5b4fc;
+  background: #dcfce7;
+  border-color: #86efac;
 }
 .type-chip.comm.active {
-  background: #4f46e5;
-  border-color: #4f46e5;
+  background: var(--paisa-green);
+  border-color: var(--paisa-green);
   color: #ffffff;
 }
 
+/* Private: Paisa Blue */
+.type-chip.priv {
+  color: var(--paisa-blue);
+  border-color: var(--paisa-blue-border);
+  background: var(--paisa-blue-light);
+}
+.type-chip.priv:hover {
+  background: #dbeafe;
+  border-color: #93c5fd;
+}
+.type-chip.priv.active {
+  background: var(--paisa-blue);
+  border-color: var(--paisa-blue);
+  color: #ffffff;
+}
+
+/* Eye Care: Paisa Amber */
 .type-chip.eye {
-  color: #b45309;
-  border-color: var(--amber-border);
-  background: var(--amber-light);
+  color: var(--paisa-amber);
+  border-color: var(--paisa-amber-border);
+  background: var(--paisa-amber-light);
 }
 .type-chip.eye:hover {
   background: #fef3c7;
   border-color: #fcd34d;
 }
 .type-chip.eye.active {
-  background: #d97706;
-  border-color: #d97706;
+  background: var(--paisa-amber);
+  border-color: var(--paisa-amber);
   color: #ffffff;
 }
 
@@ -343,14 +348,14 @@
 }
 
 .hospital-item-card.selected {
-  background: var(--primary-light);
-  border-color: var(--primary);
-  box-shadow: 0 0 0 1px var(--primary);
+  background: var(--paisa-red-light);
+  border-color: var(--paisa-red);
+  box-shadow: 0 0 0 1px var(--paisa-red);
 }
 
 .hospital-item-card.closest-highlight {
-  border: 1.5px solid var(--rose-border);
-  background: var(--rose-light);
+  border: 1.5px solid var(--paisa-red-border);
+  background: var(--paisa-red-light);
 }
 
 .hospital-item-name {
@@ -376,9 +381,9 @@
 }
 
 .distance-badge {
-  background: var(--emerald-light);
-  border: 1px solid var(--emerald-border);
-  color: var(--emerald);
+  background: var(--paisa-green-light);
+  border: 1px solid var(--paisa-green-border);
+  color: var(--paisa-green);
   padding: 1px 6px;
   border-radius: 6px;
   font-size: 0.68rem;
@@ -430,12 +435,12 @@
 }
 
 .floating-bar-btn.active {
-  background: var(--primary-light);
-  color: var(--primary);
-  border: 1px solid var(--primary-border);
+  background: var(--paisa-red-light);
+  color: var(--paisa-red);
+  border: 1px solid var(--paisa-red-border);
 }
 
-/* Custom Cluster Badges */
+/* Custom Cluster Badges (Paisa Green -> Amber -> Red Scale) */
 .custom-cluster-marker-wrap {
   display: flex;
   align-items: center;
@@ -461,7 +466,7 @@
 .custom-cluster-badge.cluster-small {
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, #4f46e5, #3730a3);
+  background: linear-gradient(135deg, #16a34a, #15803d);
   border: 2px solid #ffffff;
   font-size: 0.8rem;
 }
@@ -469,7 +474,7 @@
 .custom-cluster-badge.cluster-medium {
   width: 44px;
   height: 44px;
-  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  background: linear-gradient(135deg, #d97706, #b45309);
   border: 2.5px solid #ffffff;
   font-size: 0.85rem;
 }
@@ -477,16 +482,16 @@
 .custom-cluster-badge.cluster-large {
   width: 52px;
   height: 52px;
-  background: linear-gradient(135deg, #e11d48, #be123c);
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
   border: 3px solid #ffffff;
   font-size: 0.95rem;
   animation: pulse-ring 2.5s infinite;
 }
 
 @keyframes pulse-ring {
-  0% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(225, 29, 72, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
 }
 
 .cluster-inner-count {
@@ -501,7 +506,7 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: rgba(79, 70, 229, 0.35);
+  background: rgba(22, 163, 74, 0.35);
   animation: radar-pulse 2s infinite ease-out;
 }
 

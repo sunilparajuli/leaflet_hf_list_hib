@@ -62,17 +62,17 @@ const { Sider, Content } = Layout;
 const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
 
-// Paisa Minimal Theme Tokens
+// Paisa Minimal Theme Tokens (Red & Green Palette)
 const paisaTheme = {
   token: {
-    colorPrimary: '#4f46e5',
-    colorPrimaryHover: '#4338ca',
-    colorLink: '#4f46e5',
-    colorLinkHover: '#4338ca',
-    colorSuccess: '#059669',
+    colorPrimary: '#dc2626',
+    colorPrimaryHover: '#b91c1c',
+    colorLink: '#dc2626',
+    colorLinkHover: '#b91c1c',
+    colorSuccess: '#16a34a',
     colorWarning: '#d97706',
-    colorError: '#e11d48',
-    colorInfo: '#4f46e5',
+    colorError: '#dc2626',
+    colorInfo: '#16a34a',
     colorBgBase: '#ffffff',
     colorBgContainer: '#ffffff',
     colorBgLayout: '#f8fafc',
@@ -164,12 +164,12 @@ function getFacilityMeta(typeStr = '') {
     case 'eye':
       return { label: 'Eye Hospital', color: '#d97706', iconClass: 'fa-solid fa-eye', tagColor: 'gold' };
     case 'private':
-      return { label: 'Private Hospital', color: '#7c3aed', iconClass: 'fa-solid fa-hospital-user', tagColor: 'purple' };
+      return { label: 'Private Hospital', color: '#2563eb', iconClass: 'fa-solid fa-hospital-user', tagColor: 'blue' };
     case 'community':
-      return { label: 'Community Hospital', color: '#4f46e5', iconClass: 'fa-solid fa-hand-holding-medical', tagColor: 'geekblue' };
+      return { label: 'Community Hospital', color: '#16a34a', iconClass: 'fa-solid fa-hand-holding-medical', tagColor: 'green' };
     case 'government':
     default:
-      return { label: 'Government Hospital / PHC', color: '#059669', iconClass: 'fa-solid fa-hospital', tagColor: 'green' };
+      return { label: 'Government Hospital / PHC', color: '#dc2626', iconClass: 'fa-solid fa-hospital', tagColor: 'red' };
   }
 }
 
@@ -187,15 +187,15 @@ function calculateHaversine(lat1, lon1, lat2, lon2) {
   return R * c;
 }
 
-// Choropleth density color steps (Paisa Slate -> Indigo scale)
+// Choropleth density color steps (Paisa Green Scale)
 function getChoroplethColor(count) {
-  if (count === 0) return '#f1f5f9';
-  if (count <= 2) return '#e0e7ff';
-  if (count <= 5) return '#c7d2fe';
-  if (count <= 10) return '#818cf8';
-  if (count <= 20) return '#4f46e5';
-  if (count <= 35) return '#3730a3';
-  return '#1e1b4b';
+  if (count === 0) return '#f9fafb';
+  if (count <= 2) return '#f0fdf4';
+  if (count <= 5) return '#bbf7d0';
+  if (count <= 10) return '#86efac';
+  if (count <= 20) return '#22c55e';
+  if (count <= 35) return '#16a34a';
+  return '#14532d';
 }
 
 function resolveDistrictName(props) {
@@ -345,14 +345,14 @@ function HealthFacilitiesClusterLayer({ facilities, onSelect, clusterGroupRef, u
           </div>
           <h4 style="margin:0 0 6px 0; font-size:0.88rem; font-weight:700; color:#0f172a; line-height:1.3;">${fac.name}</h4>
           <p style="margin:0 0 10px 0; font-size:0.75rem; color:#64748b;">
-            <i class="fa-solid fa-location-dot" style="color:#ef4444; margin-right:4px;"></i> ${fac.district} District ${distStr}
+            <i class="fa-solid fa-location-dot" style="color:#dc2626; margin-right:4px;"></i> ${fac.district} District ${distStr}
           </p>
           <div style="display:flex; gap:6px;">
             <a 
               href="https://www.google.com/maps/dir/?api=1&destination=${fac.lat},${fac.lng}" 
               target="_blank" 
               rel="noopener noreferrer" 
-              style="flex:1; text-align:center; background:#4f46e5; color:white; padding:6px 10px; border-radius:6px; font-size:0.74rem; text-decoration:none; font-weight:600; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 1px 2px rgba(79,70,229,0.2);"
+              style="flex:1; text-align:center; background:#dc2626; color:white; padding:6px 10px; border-radius:6px; font-size:0.74rem; text-decoration:none; font-weight:600; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 1px 2px rgba(220,38,38,0.2);"
             >
               <i class="fa-solid fa-diamond-turn-right"></i> Directions
             </a>
@@ -599,7 +599,7 @@ export default function App() {
     if (showDensityChoropleth) {
       const count = districtFacilityCounts[distName.toLowerCase().trim()] || 0;
       return {
-        color: isSelected ? '#e11d48' : '#ffffff',
+        color: isSelected ? '#dc2626' : '#ffffff',
         weight: isSelected ? 3 : 1,
         opacity: 0.9,
         fillColor: getChoroplethColor(count),
@@ -608,11 +608,11 @@ export default function App() {
     }
 
     return {
-      color: isSelected ? '#e11d48' : '#6366f1',
-      weight: isSelected ? 2.5 : 1,
-      opacity: isSelected ? 0.9 : 0.6,
-      fillColor: '#4f46e5',
-      fillOpacity: isSelected ? 0.15 : 0.015
+      color: isSelected ? '#dc2626' : '#16a34a',
+      weight: isSelected ? 2.5 : 1.2,
+      opacity: isSelected ? 0.95 : 0.65,
+      fillColor: isSelected ? '#dc2626' : '#16a34a',
+      fillOpacity: isSelected ? 0.12 : 0.02
     };
   }
 
@@ -624,9 +624,9 @@ export default function App() {
       mouseover: (e) => {
         const lyr = e.target;
         lyr.setStyle({
-          color: '#4f46e5',
+          color: '#dc2626',
           weight: 2.2,
-          fillOpacity: showDensityChoropleth ? 0.9 : 0.1
+          fillOpacity: showDensityChoropleth ? 0.9 : 0.08
         });
         lyr.bringToFront();
       },
@@ -950,7 +950,7 @@ export default function App() {
           <div className="brand-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
               <Title className="brand-title" level={4} style={{ margin: 0 }}>
-                <MedicineBoxOutlined style={{ color: '#4f46e5' }} /> Nepal Health Map
+                <MedicineBoxOutlined style={{ color: '#dc2626' }} /> Nepal Health Map
               </Title>
               <p className="brand-subtitle">Health Insurance Board (HIB) Explorer</p>
             </div>
@@ -990,8 +990,8 @@ export default function App() {
           {/* Near Me Active Filter Header Banner */}
           {filterNearMeOnly && userPosition && (
             <div style={{
-              background: '#eef2ff',
-              border: '1px solid #c7d2fe',
+              background: '#fef2f2',
+              border: '1px solid #fecaca',
               borderRadius: 8,
               padding: '8px 12px',
               marginBottom: 10,
@@ -1000,7 +1000,7 @@ export default function App() {
               gap: 6
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.74rem', fontWeight: 700, color: '#4338ca' }}>
+                <span style={{ fontSize: '0.74rem', fontWeight: 700, color: '#dc2626' }}>
                   <AimOutlined style={{ marginRight: 4 }} /> Nearby Mode Active (Sorted by Distance)
                 </span>
                 <Button 
@@ -1010,7 +1010,7 @@ export default function App() {
                     setFilterNearMeOnly(false);
                     setNearestHospital(null);
                   }}
-                  style={{ padding: 0, height: 'auto', fontSize: '0.72rem', color: '#6366f1' }}
+                  style={{ padding: 0, height: 'auto', fontSize: '0.72rem', color: '#dc2626' }}
                 >
                   Clear Near Me
                 </Button>
@@ -1038,7 +1038,7 @@ export default function App() {
           <div className="sidebar-filters-box">
             <div className="filter-heading">
               <span><FilterOutlined /> Facility Category</span>
-              <span style={{ fontSize: '0.68rem', color: '#4f46e5', cursor: 'pointer', fontWeight: 600 }} onClick={() => {
+              <span style={{ fontSize: '0.68rem', color: '#dc2626', cursor: 'pointer', fontWeight: 600 }} onClick={() => {
                 setSelectedTypeFilter('all');
                 setSelectedProvince(null);
                 setSelectedDistrictFilter(null);
@@ -1064,16 +1064,16 @@ export default function App() {
                 Govt ({healthFacilities.filter(h => getFacilityCategory(h.type) === 'government').length})
               </div>
               <div 
-                className={`type-chip priv ${selectedTypeFilter === 'private' ? 'active' : ''}`}
-                onClick={() => setSelectedTypeFilter('private')}
-              >
-                Private ({healthFacilities.filter(h => getFacilityCategory(h.type) === 'private').length})
-              </div>
-              <div 
                 className={`type-chip comm ${selectedTypeFilter === 'community' ? 'active' : ''}`}
                 onClick={() => setSelectedTypeFilter('community')}
               >
                 Community ({healthFacilities.filter(h => getFacilityCategory(h.type) === 'community').length})
+              </div>
+              <div 
+                className={`type-chip priv ${selectedTypeFilter === 'private' ? 'active' : ''}`}
+                onClick={() => setSelectedTypeFilter('private')}
+              >
+                Private ({healthFacilities.filter(h => getFacilityCategory(h.type) === 'private').length})
               </div>
               <div 
                 className={`type-chip eye ${selectedTypeFilter === 'eye' ? 'active' : ''}`}
@@ -1148,10 +1148,10 @@ export default function App() {
           {selectedEntity && (
             <div style={{ marginBottom: 10 }}>
               {selectedEntity.type === 'district' && (
-                <Card size="small" title={<span style={{ color: '#0f172a' }}><GlobalOutlined style={{ color: '#4f46e5', marginRight: 6 }} /> District Profile</span>}>
+                <Card size="small" title={<span style={{ color: '#0f172a' }}><GlobalOutlined style={{ color: '#16a34a', marginRight: 6 }} /> District Profile</span>}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Title level={5} style={{ margin: 0, color: '#0f172a', fontWeight: 600 }}>{selectedEntity.name}</Title>
-                    <Tag color="geekblue" style={{ borderRadius: 6, fontWeight: 600 }}>{selectedEntity.count} Hospitals</Tag>
+                    <Tag color="green" style={{ borderRadius: 6, fontWeight: 600 }}>{selectedEntity.count} Hospitals</Tag>
                   </div>
                   <Paragraph style={{ color: '#64748b', fontSize: '0.78rem', margin: '6px 0 0 0' }}>
                     {selectedEntity.description}
@@ -1162,7 +1162,7 @@ export default function App() {
               {selectedEntity.type === 'health_facility' && (
                 <Card 
                   size="small" 
-                  title={<span style={{ color: '#0f172a' }}><MedicineBoxOutlined style={{ color: '#4f46e5', marginRight: 6 }} /> Selected Facility</span>} 
+                  title={<span style={{ color: '#0f172a' }}><MedicineBoxOutlined style={{ color: '#dc2626', marginRight: 6 }} /> Selected Facility</span>} 
                 >
                   <Title level={5} style={{ margin: 0, color: '#0f172a', fontWeight: 600 }}>{selectedEntity.name}</Title>
                   <div style={{ marginTop: 8 }}>
@@ -1185,7 +1185,7 @@ export default function App() {
                     {userPosition && (
                       <div className="detail-row">
                         <span className="detail-label">Distance from you</span>
-                        <span className="detail-value" style={{ color: '#059669' }}>
+                        <span className="detail-value" style={{ color: '#16a34a' }}>
                           {calculateHaversine(userPosition[0], userPosition[1], selectedEntity.coords[0], selectedEntity.coords[1]).toFixed(1)} km
                         </span>
                       </div>
@@ -1206,7 +1206,7 @@ export default function App() {
                       icon={<CarOutlined />} 
                       href={`https://www.google.com/maps/dir/?api=1${userPosition ? `&origin=${userPosition[0]},${userPosition[1]}` : ''}&destination=${selectedEntity.coords[0]},${selectedEntity.coords[1]}`}
                       target="_blank"
-                      style={{ flex: 1, borderColor: '#c7d2fe', color: '#4f46e5', background: '#eef2ff', fontWeight: 600 }}
+                      style={{ flex: 1, borderColor: '#fecaca', color: '#dc2626', background: '#fef2f2', fontWeight: 600 }}
                     >
                       Directions
                     </Button>
@@ -1224,7 +1224,7 @@ export default function App() {
               )}
 
               {selectedEntity.type === 'user_gps' && (
-                <Card size="small" title={<span style={{ color: '#0f172a' }}><AimOutlined style={{ color: '#4f46e5', marginRight: 6 }} /> GPS Position</span>}>
+                <Card size="small" title={<span style={{ color: '#0f172a' }}><AimOutlined style={{ color: '#16a34a', marginRight: 6 }} /> GPS Position</span>}>
                   <div className="detail-row">
                     <span className="detail-label">Lat / Lng</span>
                     <span className="detail-value" style={{ fontFamily: 'var(--font-mono)' }}>
@@ -1475,7 +1475,7 @@ export default function App() {
                   html: `
                     <div style="position:relative; width:28px; height:28px; display:flex; align-items:center; justify-content:center;">
                       <div class="user-pulse-wave"></div>
-                      <div style="position:absolute; width:14px; height:14px; border-radius:50%; background:#4f46e5; border:2.5px solid #ffffff; box-shadow:0 0 10px rgba(79,70,229,0.8); z-index:2;"></div>
+                      <div style="position:absolute; width:14px; height:14px; border-radius:50%; background:#16a34a; border:2.5px solid #ffffff; box-shadow:0 0 10px rgba(22,163,74,0.8); z-index:2;"></div>
                     </div>
                   `,
                   iconSize: [28, 28],
@@ -1484,7 +1484,7 @@ export default function App() {
               >
                 <Popup closeButton={false}>
                   <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#0f172a', fontFamily: 'var(--font-sans)' }}>
-                    <AimOutlined style={{ color: '#4f46e5', marginRight: 4 }} /> Your GPS Location
+                    <AimOutlined style={{ color: '#16a34a', marginRight: 4 }} /> Your GPS Location
                   </div>
                 </Popup>
               </Marker>
@@ -1494,8 +1494,8 @@ export default function App() {
                   center={userPosition}
                   radius={userAccuracy}
                   pathOptions={{
-                    color: '#4f46e5',
-                    fillColor: '#4f46e5',
+                    color: '#16a34a',
+                    fillColor: '#16a34a',
                     fillOpacity: 0.08,
                     weight: 1.5,
                     dashArray: '4, 4'
@@ -1510,7 +1510,7 @@ export default function App() {
             <Polyline
               positions={[userPosition, [nearestHospital.lat, nearestHospital.lng]]}
               pathOptions={{
-                color: '#e11d48',
+                color: '#dc2626',
                 weight: 2.5,
                 dashArray: '6, 6'
               }}
@@ -1525,8 +1525,8 @@ export default function App() {
                 center={radiusCenter}
                 radius={radiusKm * 1000}
                 pathOptions={{
-                  color: '#4f46e5',
-                  fillColor: '#4f46e5',
+                  color: '#16a34a',
+                  fillColor: '#16a34a',
                   fillOpacity: 0.08,
                   weight: 2,
                   dashArray: '6, 6'
@@ -1540,14 +1540,14 @@ export default function App() {
             <>
               <Polyline 
                 positions={measurePoints} 
-                pathOptions={{ color: '#e11d48', weight: 2.5, dashArray: '5, 5' }} 
+                pathOptions={{ color: '#dc2626', weight: 2.5, dashArray: '5, 5' }} 
               />
               {measurePoints.map((pt, idx) => (
                 <Marker 
                   key={idx} 
                   position={pt} 
                   icon={L.divIcon({
-                    html: `<div style="width:10px;height:10px;background:#e11d48;border:2px solid white;border-radius:50%;"></div>`,
+                    html: `<div style="width:10px;height:10px;background:#dc2626;border:2px solid white;border-radius:50%;"></div>`,
                     iconSize: [10, 10],
                     iconAnchor: [5, 5]
                   })}
@@ -1564,7 +1564,7 @@ export default function App() {
             <button 
               className={`floating-bar-btn ${filterNearMeOnly ? 'active' : ''}`}
               onClick={findNearbyHospitalsFromMyLocation}
-              style={{ color: '#e11d48' }}
+              style={{ color: '#dc2626' }}
             >
               <ThunderboltOutlined />
             </button>
@@ -1686,13 +1686,13 @@ export default function App() {
           <div className="choropleth-legend">
             <div className="choropleth-legend-title">Hospitals per District</div>
             <div className="choropleth-scale">
-              <div className="choropleth-swatch" style={{ background: '#f1f5f9' }} title="0" />
-              <div className="choropleth-swatch" style={{ background: '#e0e7ff' }} title="1-2" />
-              <div className="choropleth-swatch" style={{ background: '#c7d2fe' }} title="3-5" />
-              <div className="choropleth-swatch" style={{ background: '#818cf8' }} title="6-10" />
-              <div className="choropleth-swatch" style={{ background: '#4f46e5' }} title="11-20" />
-              <div className="choropleth-swatch" style={{ background: '#3730a3' }} title="21-35" />
-              <div className="choropleth-swatch" style={{ background: '#1e1b4b' }} title="35+" />
+              <div className="choropleth-swatch" style={{ background: '#f9fafb' }} title="0" />
+              <div className="choropleth-swatch" style={{ background: '#f0fdf4' }} title="1-2" />
+              <div className="choropleth-swatch" style={{ background: '#bbf7d0' }} title="3-5" />
+              <div className="choropleth-swatch" style={{ background: '#86efac' }} title="6-10" />
+              <div className="choropleth-swatch" style={{ background: '#22c55e' }} title="11-20" />
+              <div className="choropleth-swatch" style={{ background: '#16a34a' }} title="21-35" />
+              <div className="choropleth-swatch" style={{ background: '#14532d' }} title="35+" />
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: '#64748b', marginTop: 3 }}>
               <span>0</span>
