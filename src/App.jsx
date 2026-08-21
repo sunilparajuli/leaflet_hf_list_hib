@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { 
+  ConfigProvider,
   Layout, 
   Input, 
   Card, 
@@ -8,13 +9,13 @@ import {
   AutoComplete, 
   Spin, 
   message, 
-  Typography,
-  Select,
-  Tag,
-  Slider,
-  Popover,
-  Space,
-  Radio
+  Typography, 
+  Select, 
+  Tag, 
+  Slider, 
+  Popover, 
+  Space, 
+  Radio 
 } from 'antd';
 import { 
   AimOutlined, 
@@ -60,6 +61,51 @@ import { NEPAL_CENTER, NEPAL_BOUNDS, PROVINCE_DATA } from './data/provinces';
 const { Sider, Content } = Layout;
 const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
+
+// Paisa Minimal Theme Tokens
+const paisaTheme = {
+  token: {
+    colorPrimary: '#4f46e5',
+    colorPrimaryHover: '#4338ca',
+    colorLink: '#4f46e5',
+    colorLinkHover: '#4338ca',
+    colorSuccess: '#059669',
+    colorWarning: '#d97706',
+    colorError: '#e11d48',
+    colorInfo: '#4f46e5',
+    colorBgBase: '#ffffff',
+    colorBgContainer: '#ffffff',
+    colorBgLayout: '#f8fafc',
+    colorText: '#0f172a',
+    colorTextSecondary: '#64748b',
+    colorBorder: '#e2e8f0',
+    colorBorderSecondary: '#f1f5f9',
+    borderRadius: 8,
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+  },
+  components: {
+    Button: {
+      borderRadius: 8,
+      controlHeight: 34,
+      fontWeight: 500,
+    },
+    Card: {
+      borderRadiusLG: 10,
+      headerHeight: 38,
+    },
+    Input: {
+      borderRadius: 8,
+      controlHeight: 34,
+    },
+    Select: {
+      borderRadius: 8,
+      controlHeight: 34,
+    },
+    Tag: {
+      borderRadiusSM: 6,
+    }
+  }
+};
 
 // Fix Leaflet default icon paths in React environment
 delete L.Icon.Default.prototype._getIconUrl;
@@ -116,14 +162,14 @@ function getFacilityMeta(typeStr = '') {
   const cat = getFacilityCategory(typeStr);
   switch(cat) {
     case 'eye':
-      return { label: 'Eye Hospital', color: '#10b981', iconClass: 'fa-solid fa-eye', tagColor: 'cyan' };
+      return { label: 'Eye Hospital', color: '#d97706', iconClass: 'fa-solid fa-eye', tagColor: 'gold' };
     case 'private':
-      return { label: 'Private Hospital', color: '#8b5cf6', iconClass: 'fa-solid fa-hospital-user', tagColor: 'purple' };
+      return { label: 'Private Hospital', color: '#7c3aed', iconClass: 'fa-solid fa-hospital-user', tagColor: 'purple' };
     case 'community':
-      return { label: 'Community Hospital', color: '#06b6d4', iconClass: 'fa-solid fa-hand-holding-medical', tagColor: 'blue' };
+      return { label: 'Community Hospital', color: '#4f46e5', iconClass: 'fa-solid fa-hand-holding-medical', tagColor: 'geekblue' };
     case 'government':
     default:
-      return { label: 'Government Hospital / PHC', color: '#ef4444', iconClass: 'fa-solid fa-hospital', tagColor: 'red' };
+      return { label: 'Government Hospital / PHC', color: '#059669', iconClass: 'fa-solid fa-hospital', tagColor: 'green' };
   }
 }
 
@@ -141,15 +187,15 @@ function calculateHaversine(lat1, lon1, lat2, lon2) {
   return R * c;
 }
 
-// Choropleth density color steps
+// Choropleth density color steps (Paisa Slate -> Indigo scale)
 function getChoroplethColor(count) {
-  if (count === 0) return '#f0f0f0';
-  if (count <= 2) return '#e6f7ff';
-  if (count <= 5) return '#bae7ff';
-  if (count <= 10) return '#69c0ff';
-  if (count <= 20) return '#1890ff';
-  if (count <= 35) return '#096dd9';
-  return '#003a8c';
+  if (count === 0) return '#f1f5f9';
+  if (count <= 2) return '#e0e7ff';
+  if (count <= 5) return '#c7d2fe';
+  if (count <= 10) return '#818cf8';
+  if (count <= 20) return '#4f46e5';
+  if (count <= 35) return '#3730a3';
+  return '#1e1b4b';
 }
 
 function resolveDistrictName(props) {
@@ -291,22 +337,22 @@ function HealthFacilitiesClusterLayer({ facilities, onSelect, clusterGroupRef, u
         facilityCategory: cat
       })
       .bindPopup(`
-        <div style="min-width: 220px; padding: 4px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-            <span style="font-size:0.68rem; font-weight:700; color:${meta.color}; text-transform:uppercase; letter-spacing:0.5px;">
+        <div style="min-width: 230px; padding: 4px; font-family: 'Inter', sans-serif;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span style="font-size:0.68rem; font-weight:700; color:${meta.color}; text-transform:uppercase; letter-spacing:0.04em;">
               <i class="${meta.iconClass}"></i> ${fac.type}
             </span>
           </div>
-          <h4 style="margin:0 0 6px 0; font-size:0.88rem; font-weight:700; color:#1f2937; line-height:1.2;">${fac.name}</h4>
-          <p style="margin:0 0 8px 0; font-size:0.75rem; color:#6b7280;">
+          <h4 style="margin:0 0 6px 0; font-size:0.88rem; font-weight:700; color:#0f172a; line-height:1.3;">${fac.name}</h4>
+          <p style="margin:0 0 10px 0; font-size:0.75rem; color:#64748b;">
             <i class="fa-solid fa-location-dot" style="color:#ef4444; margin-right:4px;"></i> ${fac.district} District ${distStr}
           </p>
-          <div style="display:flex; gap:6px; margin-top:8px;">
+          <div style="display:flex; gap:6px;">
             <a 
               href="https://www.google.com/maps/dir/?api=1&destination=${fac.lat},${fac.lng}" 
               target="_blank" 
               rel="noopener noreferrer" 
-              style="flex:1; text-align:center; background:#1890ff; color:white; padding:4px 8px; border-radius:4px; font-size:0.75rem; text-decoration:none; font-weight:600; display:flex; align-items:center; justify-content:center; gap:4px;"
+              style="flex:1; text-align:center; background:#4f46e5; color:white; padding:6px 10px; border-radius:6px; font-size:0.74rem; text-decoration:none; font-weight:600; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 1px 2px rgba(79,70,229,0.2);"
             >
               <i class="fa-solid fa-diamond-turn-right"></i> Directions
             </a>
@@ -553,7 +599,7 @@ export default function App() {
     if (showDensityChoropleth) {
       const count = districtFacilityCounts[distName.toLowerCase().trim()] || 0;
       return {
-        color: isSelected ? '#ff4d4f' : '#ffffff',
+        color: isSelected ? '#e11d48' : '#ffffff',
         weight: isSelected ? 3 : 1,
         opacity: 0.9,
         fillColor: getChoroplethColor(count),
@@ -562,11 +608,11 @@ export default function App() {
     }
 
     return {
-      color: isSelected ? 'var(--accent)' : '#1890ff',
-      weight: isSelected ? 3 : 1.2,
-      opacity: 0.8,
-      fillColor: '#1890ff',
-      fillOpacity: isSelected ? 0.18 : 0.02
+      color: isSelected ? '#e11d48' : '#6366f1',
+      weight: isSelected ? 2.5 : 1,
+      opacity: isSelected ? 0.9 : 0.6,
+      fillColor: '#4f46e5',
+      fillOpacity: isSelected ? 0.15 : 0.015
     };
   }
 
@@ -578,9 +624,9 @@ export default function App() {
       mouseover: (e) => {
         const lyr = e.target;
         lyr.setStyle({
-          color: 'var(--accent)',
-          weight: 2.5,
-          fillOpacity: showDensityChoropleth ? 0.9 : 0.12
+          color: '#4f46e5',
+          weight: 2.2,
+          fillOpacity: showDensityChoropleth ? 0.9 : 0.1
         });
         lyr.bringToFront();
       },
@@ -894,314 +940,305 @@ export default function App() {
   }
 
   return (
-    <Layout>
-      {/* ----------------------------------------------------
-          SIDEBAR: CONTROLS, FILTERS & LIST
-          ---------------------------------------------------- */}
-      <Sider width={380} collapsedWidth={0} collapsible collapsed={collapsed} theme="light" trigger={null}>
-        {/* Brand Header */}
-        <div className="brand-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <Title className="brand-title" level={4} style={{ margin: 0 }}>
-              <MedicineBoxOutlined style={{ color: '#ef4444' }} /> Nepal Health Map
-            </Title>
-            <p className="brand-subtitle">Health Insurance Board (HIB) Explorer</p>
+    <ConfigProvider theme={paisaTheme}>
+      <Layout>
+        {/* ----------------------------------------------------
+            SIDEBAR: CONTROLS, FILTERS & LIST
+            ---------------------------------------------------- */}
+        <Sider width={380} collapsedWidth={0} collapsible collapsed={collapsed} theme="light" trigger={null}>
+          {/* Brand Header */}
+          <div className="brand-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <Title className="brand-title" level={4} style={{ margin: 0 }}>
+                <MedicineBoxOutlined style={{ color: '#4f46e5' }} /> Nepal Health Map
+              </Title>
+              <p className="brand-subtitle">Health Insurance Board (HIB) Explorer</p>
+            </div>
+            <Button 
+              type="text" 
+              icon={<CloseOutlined />} 
+              onClick={() => setCollapsed(true)} 
+              style={{ fontSize: '0.9rem', color: '#64748b' }}
+            />
           </div>
-          <Button 
-            type="text" 
-            icon={<CloseOutlined />} 
-            onClick={() => setCollapsed(true)} 
-            style={{ fontSize: '1rem', color: '#595959' }}
+
+          {/* Prominent "Find Hospitals Near Me" Action Bar */}
+          <div style={{ marginBottom: 10 }}>
+            <Button 
+              className="locate-main-btn"
+              type="primary" 
+              block 
+              icon={<ThunderboltOutlined />}
+              loading={gpsLoading}
+              onClick={findNearbyHospitalsFromMyLocation}
+            >
+              Locate Nearby Hospitals from My Location
+            </Button>
+          </div>
+
+          {/* Global Autocomplete */}
+          <AutoComplete
+            style={{ width: '100%', marginBottom: 10 }}
+            options={autocompleteOptions}
+            value={searchVal}
+            onSearch={onSearchChange}
+            onSelect={onSearchSelect}
+            placeholder="Search districts or hospitals..."
+            allowClear
           />
-        </div>
 
-        {/* Prominent "Find Hospitals Near Me" Action Bar */}
-        <div style={{ marginBottom: 10 }}>
-          <Button 
-            type="primary" 
-            danger 
-            block 
-            icon={<ThunderboltOutlined />}
-            loading={gpsLoading}
-            onClick={findNearbyHospitalsFromMyLocation}
-            style={{ 
-              height: 38, 
-              fontWeight: 600, 
-              borderRadius: 6,
-              boxShadow: '0 2px 6px rgba(239, 68, 68, 0.25)' 
-            }}
-          >
-            Locate Nearby Hospitals from My Location
-          </Button>
-        </div>
-
-        {/* Global Autocomplete */}
-        <AutoComplete
-          style={{ width: '100%', marginBottom: 10 }}
-          options={autocompleteOptions}
-          value={searchVal}
-          onSearch={onSearchChange}
-          onSelect={onSearchSelect}
-          placeholder="Search districts or hospitals..."
-          allowClear
-        />
-
-        {/* Near Me Active Filter Header Banner */}
-        {filterNearMeOnly && userPosition && (
-          <div style={{
-            background: '#fff1f0',
-            border: '1px solid #ffa39e',
-            borderRadius: 6,
-            padding: '8px 10px',
-            marginBottom: 10,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 6
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#cf1322' }}>
-                <AimOutlined /> Nearby Mode Active (Sorted by Distance)
-              </span>
-              <Button 
-                type="link" 
-                size="small" 
-                danger 
-                onClick={() => {
-                  setFilterNearMeOnly(false);
-                  setNearestHospital(null);
-                }}
-                style={{ padding: 0, height: 'auto', fontSize: '0.72rem' }}
-              >
-                Clear Near Me
-              </Button>
-            </div>
-            
-            {/* Quick Radius Filter for Near Me */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.72rem' }}>
-              <span style={{ color: '#595959' }}>Within:</span>
-              <Radio.Group 
-                size="small" 
-                value={nearMeRadiusMax} 
-                onChange={(e) => setNearMeRadiusMax(e.target.value)}
-                buttonStyle="solid"
-              >
-                <Radio.Button value={10}>10 km</Radio.Button>
-                <Radio.Button value={25}>25 km</Radio.Button>
-                <Radio.Button value={50}>50 km</Radio.Button>
-                <Radio.Button value={9999}>All</Radio.Button>
-              </Radio.Group>
-            </div>
-          </div>
-        )}
-
-        {/* Interactive Filtering Panel */}
-        <div className="sidebar-filters-box">
-          <div className="filter-heading">
-            <span><FilterOutlined /> Facility Category</span>
-            <span style={{ fontSize: '0.68rem', color: '#1890ff', cursor: 'pointer' }} onClick={() => {
-              setSelectedTypeFilter('all');
-              setSelectedProvince(null);
-              setSelectedDistrictFilter(null);
-              setHospitalsSearchQuery('');
-              setFilterNearMeOnly(false);
-              setNearestHospital(null);
+          {/* Near Me Active Filter Header Banner */}
+          {filterNearMeOnly && userPosition && (
+            <div style={{
+              background: '#eef2ff',
+              border: '1px solid #c7d2fe',
+              borderRadius: 8,
+              padding: '8px 12px',
+              marginBottom: 10,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 6
             }}>
-              Reset All
-            </span>
-          </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.74rem', fontWeight: 700, color: '#4338ca' }}>
+                  <AimOutlined style={{ marginRight: 4 }} /> Nearby Mode Active (Sorted by Distance)
+                </span>
+                <Button 
+                  type="link" 
+                  size="small" 
+                  onClick={() => {
+                    setFilterNearMeOnly(false);
+                    setNearestHospital(null);
+                  }}
+                  style={{ padding: 0, height: 'auto', fontSize: '0.72rem', color: '#6366f1' }}
+                >
+                  Clear Near Me
+                </Button>
+              </div>
+              
+              {/* Quick Radius Filter for Near Me */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.72rem' }}>
+                <span style={{ color: '#64748b', fontWeight: 500 }}>Within:</span>
+                <Radio.Group 
+                  size="small" 
+                  value={nearMeRadiusMax} 
+                  onChange={(e) => setNearMeRadiusMax(e.target.value)}
+                  buttonStyle="solid"
+                >
+                  <Radio.Button value={10}>10 km</Radio.Button>
+                  <Radio.Button value={25}>25 km</Radio.Button>
+                  <Radio.Button value={50}>50 km</Radio.Button>
+                  <Radio.Button value={9999}>All</Radio.Button>
+                </Radio.Group>
+              </div>
+            </div>
+          )}
 
-          <div className="facility-type-chips">
-            <div 
-              className={`type-chip ${selectedTypeFilter === 'all' ? 'active' : ''}`}
-              onClick={() => setSelectedTypeFilter('all')}
-            >
-              All ({healthFacilities.length})
-            </div>
-            <div 
-              className={`type-chip gov ${selectedTypeFilter === 'government' ? 'active' : ''}`}
-              onClick={() => setSelectedTypeFilter('government')}
-            >
-              Govt ({healthFacilities.filter(h => getFacilityCategory(h.type) === 'government').length})
-            </div>
-            <div 
-              className={`type-chip priv ${selectedTypeFilter === 'private' ? 'active' : ''}`}
-              onClick={() => setSelectedTypeFilter('private')}
-            >
-              Private ({healthFacilities.filter(h => getFacilityCategory(h.type) === 'private').length})
-            </div>
-            <div 
-              className={`type-chip comm ${selectedTypeFilter === 'community' ? 'active' : ''}`}
-              onClick={() => setSelectedTypeFilter('community')}
-            >
-              Community ({healthFacilities.filter(h => getFacilityCategory(h.type) === 'community').length})
-            </div>
-            <div 
-              className={`type-chip eye ${selectedTypeFilter === 'eye' ? 'active' : ''}`}
-              onClick={() => setSelectedTypeFilter('eye')}
-            >
-              Eye Care ({healthFacilities.filter(h => getFacilityCategory(h.type) === 'eye').length})
-            </div>
-          </div>
-
-          {/* Cascading Province & District Dropdowns */}
-          <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
-            <Select 
-              placeholder="Province" 
-              size="small" 
-              allowClear 
-              style={{ flex: 1 }}
-              value={selectedProvince}
-              onChange={(val) => {
-                setSelectedProvince(val);
+          {/* Interactive Filtering Panel */}
+          <div className="sidebar-filters-box">
+            <div className="filter-heading">
+              <span><FilterOutlined /> Facility Category</span>
+              <span style={{ fontSize: '0.68rem', color: '#4f46e5', cursor: 'pointer', fontWeight: 600 }} onClick={() => {
+                setSelectedTypeFilter('all');
+                setSelectedProvince(null);
                 setSelectedDistrictFilter(null);
-                if (val && PROVINCE_DATA[val]) {
-                  const pDistricts = PROVINCE_DATA[val].districts;
-                  if (districtLayerRef.current) {
-                    let group = L.featureGroup();
-                    districtLayerRef.current.eachLayer(layer => {
-                      if (pDistricts.some(d => d.toLowerCase() === resolveDistrictName(layer.feature.properties).toLowerCase())) {
-                        group.addLayer(layer);
+                setHospitalsSearchQuery('');
+                setFilterNearMeOnly(false);
+                setNearestHospital(null);
+              }}>
+                Reset All
+              </span>
+            </div>
+
+            <div className="facility-type-chips">
+              <div 
+                className={`type-chip ${selectedTypeFilter === 'all' ? 'active' : ''}`}
+                onClick={() => setSelectedTypeFilter('all')}
+              >
+                All ({healthFacilities.length})
+              </div>
+              <div 
+                className={`type-chip gov ${selectedTypeFilter === 'government' ? 'active' : ''}`}
+                onClick={() => setSelectedTypeFilter('government')}
+              >
+                Govt ({healthFacilities.filter(h => getFacilityCategory(h.type) === 'government').length})
+              </div>
+              <div 
+                className={`type-chip priv ${selectedTypeFilter === 'private' ? 'active' : ''}`}
+                onClick={() => setSelectedTypeFilter('private')}
+              >
+                Private ({healthFacilities.filter(h => getFacilityCategory(h.type) === 'private').length})
+              </div>
+              <div 
+                className={`type-chip comm ${selectedTypeFilter === 'community' ? 'active' : ''}`}
+                onClick={() => setSelectedTypeFilter('community')}
+              >
+                Community ({healthFacilities.filter(h => getFacilityCategory(h.type) === 'community').length})
+              </div>
+              <div 
+                className={`type-chip eye ${selectedTypeFilter === 'eye' ? 'active' : ''}`}
+                onClick={() => setSelectedTypeFilter('eye')}
+              >
+                Eye Care ({healthFacilities.filter(h => getFacilityCategory(h.type) === 'eye').length})
+              </div>
+            </div>
+
+            {/* Cascading Province & District Dropdowns */}
+            <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
+              <Select 
+                placeholder="Province" 
+                size="small" 
+                allowClear 
+                style={{ flex: 1 }}
+                value={selectedProvince}
+                onChange={(val) => {
+                  setSelectedProvince(val);
+                  setSelectedDistrictFilter(null);
+                  if (val && PROVINCE_DATA[val]) {
+                    const pDistricts = PROVINCE_DATA[val].districts;
+                    if (districtLayerRef.current) {
+                      let group = L.featureGroup();
+                      districtLayerRef.current.eachLayer(layer => {
+                        if (pDistricts.some(d => d.toLowerCase() === resolveDistrictName(layer.feature.properties).toLowerCase())) {
+                          group.addLayer(layer);
+                        }
+                      });
+                      if (group.getLayers().length > 0 && mapRef.current) {
+                        mapRef.current.fitBounds(group.getBounds(), { padding: [20, 20] });
                       }
-                    });
-                    if (group.getLayers().length > 0 && mapRef.current) {
-                      mapRef.current.fitBounds(group.getBounds(), { padding: [20, 20] });
                     }
                   }
-                }
-              }}
-            >
-              {Object.entries(PROVINCE_DATA).map(([id, prov]) => (
-                <Option key={id} value={parseInt(id)}>{prov.name}</Option>
-              ))}
-            </Select>
-
-            <Select
-              placeholder="District"
-              size="small"
-              allowClear
-              showSearch
-              style={{ flex: 1 }}
-              value={selectedDistrictFilter}
-              onChange={(val) => {
-                setSelectedDistrictFilter(val);
-                if (val && districtLayerRef.current) {
-                  districtLayerRef.current.eachLayer(layer => {
-                    if (resolveDistrictName(layer.feature.properties).toLowerCase() === val.toLowerCase()) {
-                      mapRef.current?.fitBounds(layer.getBounds(), { maxZoom: 11 });
-                      selectDistrict(val, layer);
-                    }
-                  });
-                }
-              }}
-            >
-              {(selectedProvince ? PROVINCE_DATA[selectedProvince].districts : Object.values(PROVINCE_DATA).flatMap(p => p.districts))
-                .sort()
-                .map(d => (
-                  <Option key={d} value={d}>{d}</Option>
-                ))
-              }
-            </Select>
-          </div>
-        </div>
-
-        {/* Selected Profile Details Card */}
-        {selectedEntity && (
-          <div style={{ marginBottom: 10 }}>
-            {selectedEntity.type === 'district' && (
-              <Card size="small" title={<span><GlobalOutlined /> District Profile</span>} style={{ borderColor: '#d9d9d9' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Title level={5} style={{ margin: 0 }}>{selectedEntity.name}</Title>
-                  <Tag color="blue">{selectedEntity.count} Hospitals</Tag>
-                </div>
-                <Paragraph style={{ color: '#595959', fontSize: '0.78rem', margin: '6px 0 0 0' }}>
-                  {selectedEntity.description}
-                </Paragraph>
-              </Card>
-            )}
-
-            {selectedEntity.type === 'health_facility' && (
-              <Card 
-                size="small" 
-                title={<span style={{ color: '#ef4444' }}><MedicineBoxOutlined /> Selected Facility</span>} 
-                style={{ borderColor: '#ef4444' }}
+                }}
               >
-                <Title level={5} style={{ margin: 0 }}>{selectedEntity.name}</Title>
-                <div style={{ marginTop: 6 }}>
-                  <div className="detail-row">
-                    <span className="detail-label">Classification</span>
-                    <Tag color={getFacilityMeta(selectedEntity.facilityType).tagColor} style={{ margin: 0 }}>
-                      {selectedEntity.facilityType}
-                    </Tag>
+                {Object.entries(PROVINCE_DATA).map(([id, prov]) => (
+                  <Option key={id} value={parseInt(id)}>{prov.name}</Option>
+                ))}
+              </Select>
+
+              <Select
+                placeholder="District"
+                size="small"
+                allowClear
+                showSearch
+                style={{ flex: 1 }}
+                value={selectedDistrictFilter}
+                onChange={(val) => {
+                  setSelectedDistrictFilter(val);
+                  if (val && districtLayerRef.current) {
+                    districtLayerRef.current.eachLayer(layer => {
+                      if (resolveDistrictName(layer.feature.properties).toLowerCase() === val.toLowerCase()) {
+                        mapRef.current?.fitBounds(layer.getBounds(), { maxZoom: 11 });
+                        selectDistrict(val, layer);
+                      }
+                    });
+                  }
+                }}
+              >
+                {(selectedProvince ? PROVINCE_DATA[selectedProvince].districts : Object.values(PROVINCE_DATA).flatMap(p => p.districts))
+                  .sort()
+                  .map(d => (
+                    <Option key={d} value={d}>{d}</Option>
+                  ))
+                }
+              </Select>
+            </div>
+          </div>
+
+          {/* Selected Profile Details Card */}
+          {selectedEntity && (
+            <div style={{ marginBottom: 10 }}>
+              {selectedEntity.type === 'district' && (
+                <Card size="small" title={<span style={{ color: '#0f172a' }}><GlobalOutlined style={{ color: '#4f46e5', marginRight: 6 }} /> District Profile</span>}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Title level={5} style={{ margin: 0, color: '#0f172a', fontWeight: 600 }}>{selectedEntity.name}</Title>
+                    <Tag color="geekblue" style={{ borderRadius: 6, fontWeight: 600 }}>{selectedEntity.count} Hospitals</Tag>
                   </div>
-                  <div className="detail-row">
-                    <span className="detail-label">District</span>
-                    <span className="detail-value">{selectedEntity.district}</span>
-                  </div>
-                  <div className="detail-row">
-                    <span className="detail-label">Coordinates</span>
-                    <span className="detail-value" style={{ fontFamily: 'monospace', fontSize: '0.72rem' }}>
-                      {selectedEntity.coords[0].toFixed(5)}, {selectedEntity.coords[1].toFixed(5)}
-                    </span>
-                  </div>
-                  {userPosition && (
+                  <Paragraph style={{ color: '#64748b', fontSize: '0.78rem', margin: '6px 0 0 0' }}>
+                    {selectedEntity.description}
+                  </Paragraph>
+                </Card>
+              )}
+
+              {selectedEntity.type === 'health_facility' && (
+                <Card 
+                  size="small" 
+                  title={<span style={{ color: '#0f172a' }}><MedicineBoxOutlined style={{ color: '#4f46e5', marginRight: 6 }} /> Selected Facility</span>} 
+                >
+                  <Title level={5} style={{ margin: 0, color: '#0f172a', fontWeight: 600 }}>{selectedEntity.name}</Title>
+                  <div style={{ marginTop: 8 }}>
                     <div className="detail-row">
-                      <span className="detail-label">Distance from you</span>
-                      <span className="detail-value" style={{ color: '#52c41a' }}>
-                        {calculateHaversine(userPosition[0], userPosition[1], selectedEntity.coords[0], selectedEntity.coords[1]).toFixed(1)} km
+                      <span className="detail-label">Classification</span>
+                      <Tag color={getFacilityMeta(selectedEntity.facilityType).tagColor} style={{ margin: 0, borderRadius: 6 }}>
+                        {selectedEntity.facilityType}
+                      </Tag>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">District</span>
+                      <span className="detail-value">{selectedEntity.district}</span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Coordinates</span>
+                      <span className="detail-value" style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#64748b' }}>
+                        {selectedEntity.coords[0].toFixed(5)}, {selectedEntity.coords[1].toFixed(5)}
                       </span>
                     </div>
-                  )}
-                </div>
-                <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
-                  <Button 
-                    type="primary" 
-                    danger 
-                    size="small" 
-                    icon={<FullscreenOutlined />}
-                    onClick={() => mapRef.current?.setView(selectedEntity.coords, 16)}
-                    style={{ flex: 1 }}
-                  >
-                    Zoom
-                  </Button>
-                  <Button 
-                    type="primary" 
-                    size="small" 
-                    icon={<CarOutlined />} 
-                    href={`https://www.google.com/maps/dir/?api=1${userPosition ? `&origin=${userPosition[0]},${userPosition[1]}` : ''}&destination=${selectedEntity.coords[0]},${selectedEntity.coords[1]}`}
-                    target="_blank"
-                    style={{ flex: 1, background: '#1890ff' }}
-                  >
-                    Directions
-                  </Button>
-                  <Button 
-                    size="small"
-                    onClick={() => {
-                      setSelectedEntity(null);
-                      mapRef.current?.setView(NEPAL_CENTER, 7.3);
-                    }}
-                  >
-                    Clear
-                  </Button>
-                </div>
-              </Card>
-            )}
+                    {userPosition && (
+                      <div className="detail-row">
+                        <span className="detail-label">Distance from you</span>
+                        <span className="detail-value" style={{ color: '#059669' }}>
+                          {calculateHaversine(userPosition[0], userPosition[1], selectedEntity.coords[0], selectedEntity.coords[1]).toFixed(1)} km
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
+                    <Button 
+                      type="primary" 
+                      size="small" 
+                      icon={<FullscreenOutlined />}
+                      onClick={() => mapRef.current?.setView(selectedEntity.coords, 16)}
+                      style={{ flex: 1 }}
+                    >
+                      Zoom
+                    </Button>
+                    <Button 
+                      size="small" 
+                      icon={<CarOutlined />} 
+                      href={`https://www.google.com/maps/dir/?api=1${userPosition ? `&origin=${userPosition[0]},${userPosition[1]}` : ''}&destination=${selectedEntity.coords[0]},${selectedEntity.coords[1]}`}
+                      target="_blank"
+                      style={{ flex: 1, borderColor: '#c7d2fe', color: '#4f46e5', background: '#eef2ff', fontWeight: 600 }}
+                    >
+                      Directions
+                    </Button>
+                    <Button 
+                      size="small"
+                      onClick={() => {
+                        setSelectedEntity(null);
+                        mapRef.current?.setView(NEPAL_CENTER, 7.3);
+                      }}
+                    >
+                      Clear
+                    </Button>
+                  </div>
+                </Card>
+              )}
 
-            {selectedEntity.type === 'user_gps' && (
-              <Card size="small" title={<span><AimOutlined style={{ color: '#1890ff' }} /> GPS Position</span>}>
-                <div className="detail-row">
-                  <span className="detail-label">Lat / Lng</span>
-                  <span className="detail-value" style={{ fontFamily: 'monospace' }}>
-                    {selectedEntity.lat.toFixed(5)}, {selectedEntity.lng.toFixed(5)}
-                  </span>
-                </div>
-                <div className="detail-row">
-                  <span className="detail-label">Accuracy</span>
-                  <span className="detail-value">~{selectedEntity.accuracy ? selectedEntity.accuracy.toFixed(1) : '10'} meters</span>
-                </div>
-              </Card>
-            )}
-          </div>
-        )}
+              {selectedEntity.type === 'user_gps' && (
+                <Card size="small" title={<span style={{ color: '#0f172a' }}><AimOutlined style={{ color: '#4f46e5', marginRight: 6 }} /> GPS Position</span>}>
+                  <div className="detail-row">
+                    <span className="detail-label">Lat / Lng</span>
+                    <span className="detail-value" style={{ fontFamily: 'var(--font-mono)' }}>
+                      {selectedEntity.lat.toFixed(5)}, {selectedEntity.lng.toFixed(5)}
+                    </span>
+                  </div>
+                  <div className="detail-row">
+                    <span className="detail-label">Accuracy</span>
+                    <span className="detail-value">~{selectedEntity.accuracy ? selectedEntity.accuracy.toFixed(1) : '10'} meters</span>
+                  </div>
+                </Card>
+              )}
+            </div>
+          )}
 
         {/* Scrollable Hospitals List */}
         <div className="hospitals-list-wrapper">
@@ -1319,17 +1356,17 @@ export default function App() {
         {/* Active Mode Notification Toasts */}
         {isMeasureMode && (
           <div className="map-status-toast">
-            <LineOutlined style={{ color: '#1890ff' }} />
-            <span>Click map points to measure distance: <strong>{totalMeasuredDistance.toFixed(2)} km</strong> ({measurePoints.length} points)</span>
+            <LineOutlined style={{ color: '#4f46e5' }} />
+            <span>Click map points to measure distance: <strong style={{ color: '#0f172a' }}>{totalMeasuredDistance.toFixed(2)} km</strong> ({measurePoints.length} points)</span>
             <Button size="small" danger onClick={() => setMeasurePoints([])} icon={<ClearOutlined />}>Clear</Button>
-            <Button size="small" onClick={() => { setIsMeasureMode(false); setMeasurePoints([]); }}>Done</Button>
+            <Button size="small" type="primary" onClick={() => { setIsMeasureMode(false); setMeasurePoints([]); }}>Done</Button>
           </div>
         )}
 
         {isRadiusMode && (
           <div className="map-status-toast">
-            <RadarChartOutlined style={{ color: '#52c41a' }} />
-            <span>Click map to set radius center (Radius: <strong>{radiusKm} km</strong>)</span>
+            <RadarChartOutlined style={{ color: '#059669' }} />
+            <span>Click map to set radius center (Radius: <strong style={{ color: '#0f172a' }}>{radiusKm} km</strong>)</span>
             <Slider 
               min={5} 
               max={100} 
@@ -1344,10 +1381,10 @@ export default function App() {
 
         {/* Floating Nearest Hospital Alert Banner */}
         {nearestHospital && userPosition && (
-          <div className="map-status-toast" style={{ borderColor: '#ff4d4f', background: '#fff1f0' }}>
-            <MedicineBoxOutlined style={{ color: '#ef4444', fontSize: '1.1rem' }} />
+          <div className="map-status-toast" style={{ borderColor: '#fca5a5', background: '#fef2f2' }}>
+            <MedicineBoxOutlined style={{ color: '#e11d48', fontSize: '1rem' }} />
             <span>
-              Nearest Hospital: <strong>{nearestHospital.name}</strong> (~{nearestHospital.distanceKm.toFixed(1)} km)
+              Nearest Hospital: <strong style={{ color: '#0f172a' }}>{nearestHospital.name}</strong> (~{nearestHospital.distanceKm.toFixed(1)} km)
             </span>
             <Button 
               size="small" 
@@ -1399,10 +1436,10 @@ export default function App() {
             <GeoJSON
               data={worldMaskGeoJson}
               style={{
-                fillColor: '#1e293b', // Deep slate grey mask
-                fillOpacity: 0.62,
+                fillColor: '#0f172a', // Deep slate grey mask
+                fillOpacity: 0.65,
                 weight: 1,
-                color: '#334155',
+                color: '#1e293b',
                 stroke: false
               }}
               key="nepal-world-mask-layer"
@@ -1436,18 +1473,18 @@ export default function App() {
                 icon={L.divIcon({
                   className: 'gps-user-marker-container',
                   html: `
-                    <div style="position:relative; width:26px; height:26px; display:flex; align-items:center; justify-content:center;">
+                    <div style="position:relative; width:28px; height:28px; display:flex; align-items:center; justify-content:center;">
                       <div class="user-pulse-wave"></div>
-                      <div style="position:absolute; width:14px; height:14px; border-radius:50%; background:#1890ff; border:2.5px solid #ffffff; box-shadow:0 0 10px rgba(24,144,255,0.8); z-index:2;"></div>
+                      <div style="position:absolute; width:14px; height:14px; border-radius:50%; background:#4f46e5; border:2.5px solid #ffffff; box-shadow:0 0 10px rgba(79,70,229,0.8); z-index:2;"></div>
                     </div>
                   `,
-                  iconSize: [26, 26],
-                  iconAnchor: [13, 13]
+                  iconSize: [28, 28],
+                  iconAnchor: [14, 14]
                 })}
               >
                 <Popup closeButton={false}>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 600 }}>
-                    <AimOutlined style={{ color: '#1890ff' }} /> Your GPS Location
+                  <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#0f172a', fontFamily: 'var(--font-sans)' }}>
+                    <AimOutlined style={{ color: '#4f46e5', marginRight: 4 }} /> Your GPS Location
                   </div>
                 </Popup>
               </Marker>
@@ -1457,8 +1494,8 @@ export default function App() {
                   center={userPosition}
                   radius={userAccuracy}
                   pathOptions={{
-                    color: '#1890ff',
-                    fillColor: '#1890ff',
+                    color: '#4f46e5',
+                    fillColor: '#4f46e5',
                     fillOpacity: 0.08,
                     weight: 1.5,
                     dashArray: '4, 4'
@@ -1473,8 +1510,8 @@ export default function App() {
             <Polyline
               positions={[userPosition, [nearestHospital.lat, nearestHospital.lng]]}
               pathOptions={{
-                color: '#ef4444',
-                weight: 3,
+                color: '#e11d48',
+                weight: 2.5,
                 dashArray: '6, 6'
               }}
             />
@@ -1488,8 +1525,8 @@ export default function App() {
                 center={radiusCenter}
                 radius={radiusKm * 1000}
                 pathOptions={{
-                  color: '#52c41a',
-                  fillColor: '#52c41a',
+                  color: '#4f46e5',
+                  fillColor: '#4f46e5',
                   fillOpacity: 0.08,
                   weight: 2,
                   dashArray: '6, 6'
@@ -1503,14 +1540,14 @@ export default function App() {
             <>
               <Polyline 
                 positions={measurePoints} 
-                pathOptions={{ color: '#f5222d', weight: 3, dashArray: '5, 5' }} 
+                pathOptions={{ color: '#e11d48', weight: 2.5, dashArray: '5, 5' }} 
               />
               {measurePoints.map((pt, idx) => (
                 <Marker 
                   key={idx} 
                   position={pt} 
                   icon={L.divIcon({
-                    html: `<div style="width:10px;height:10px;background:#f5222d;border:2px solid white;border-radius:50%;"></div>`,
+                    html: `<div style="width:10px;height:10px;background:#e11d48;border:2px solid white;border-radius:50%;"></div>`,
                     iconSize: [10, 10],
                     iconAnchor: [5, 5]
                   })}
@@ -1527,7 +1564,7 @@ export default function App() {
             <button 
               className={`floating-bar-btn ${filterNearMeOnly ? 'active' : ''}`}
               onClick={findNearbyHospitalsFromMyLocation}
-              style={{ color: '#ef4444' }}
+              style={{ color: '#e11d48' }}
             >
               <ThunderboltOutlined />
             </button>
@@ -1549,7 +1586,7 @@ export default function App() {
           {/* Basemap Switcher Popover */}
           <Popover 
             placement="leftTop" 
-            title="Choose Basemap" 
+            title={<span style={{ fontWeight: 600, color: '#0f172a', fontSize: '0.8rem' }}>Choose Basemap</span>} 
             trigger="click"
             content={
               <div className="basemap-picker-grid">
@@ -1560,7 +1597,7 @@ export default function App() {
                     onClick={() => setCurrentBasemap(key)}
                   >
                     <div>{bm.name.split(' ')[0]}</div>
-                    <div style={{ fontSize: '0.65rem', color: '#8c8c8c' }}>{bm.name.includes('(') ? bm.name.split('(')[1].replace(')', '') : ''}</div>
+                    <div style={{ fontSize: '0.65rem', color: '#64748b' }}>{bm.name.includes('(') ? bm.name.split('(')[1].replace(')', '') : ''}</div>
                   </div>
                 ))}
               </div>
@@ -1649,14 +1686,15 @@ export default function App() {
           <div className="choropleth-legend">
             <div className="choropleth-legend-title">Hospitals per District</div>
             <div className="choropleth-scale">
-              <div className="choropleth-swatch" style={{ background: '#f0f0f0' }} title="0" />
-              <div className="choropleth-swatch" style={{ background: '#bae7ff' }} title="1-5" />
-              <div className="choropleth-swatch" style={{ background: '#69c0ff' }} title="6-10" />
-              <div className="choropleth-swatch" style={{ background: '#1890ff' }} title="11-20" />
-              <div className="choropleth-swatch" style={{ background: '#096dd9' }} title="21-35" />
-              <div className="choropleth-swatch" style={{ background: '#003a8c' }} title="35+" />
+              <div className="choropleth-swatch" style={{ background: '#f1f5f9' }} title="0" />
+              <div className="choropleth-swatch" style={{ background: '#e0e7ff' }} title="1-2" />
+              <div className="choropleth-swatch" style={{ background: '#c7d2fe' }} title="3-5" />
+              <div className="choropleth-swatch" style={{ background: '#818cf8' }} title="6-10" />
+              <div className="choropleth-swatch" style={{ background: '#4f46e5' }} title="11-20" />
+              <div className="choropleth-swatch" style={{ background: '#3730a3' }} title="21-35" />
+              <div className="choropleth-swatch" style={{ background: '#1e1b4b' }} title="35+" />
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: '#8c8c8c', marginTop: 3 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: '#64748b', marginTop: 3 }}>
               <span>0</span>
               <span>10</span>
               <span>35+</span>
@@ -1671,5 +1709,6 @@ export default function App() {
         </div>
       </Content>
     </Layout>
+  </ConfigProvider>
   );
 }
