@@ -418,7 +418,7 @@ export default function App() {
 
   // Responsive & UI states
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(window.innerWidth <= 768);
 
   // GPS geolocation states
   const [userPosition, setUserPosition] = useState(null);
