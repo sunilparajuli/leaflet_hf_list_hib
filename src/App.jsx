@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { 
   ConfigProvider,
   Layout, 
@@ -1709,6 +1710,7 @@ export default function App() {
         </div>
       </Content>
     </Layout>
+    <Analytics />
   </ConfigProvider>
   );
 }
