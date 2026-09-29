@@ -393,6 +393,7 @@ export default function App() {
 
   // States: Geo & Data
   const [districtGeoJson, setDistrictGeoJson] = useState(null);
+  const [provinceGeoJson, setProvinceGeoJson] = useState(null);
   const [districtsLoading, setDistrictsLoading] = useState(true);
   const [healthFacilities, setHealthFacilities] = useState([]);
   const [selectedEntity, setSelectedEntity] = useState(null);
@@ -459,6 +460,11 @@ export default function App() {
 
   // Fetch boundary & facility listings on startup
   useEffect(() => {
+    fetch('/nepal-provinces.geojson?v=1')
+      .then(res => res.json())
+      .then(data => setProvinceGeoJson(data))
+      .catch(() => {});
+
     fetch('/nepal-districts-highres.geojson?v=2')
       .then(res => res.json())
       .then(data => {
@@ -596,6 +602,28 @@ export default function App() {
     nearMeRadiusMax
   ]);
 
+  // Province border style: Red lines for provinces only, NO fill/shading
+  function getProvinceBorderStyle(feature) {
+    const provId = feature.properties?.PROVINCE;
+    const isSelected = selectedProvince === provId;
+
+    if (selectedProvince) {
+      return {
+        color: isSelected ? '#b91c1c' : '#ef4444',
+        weight: isSelected ? 3.5 : 1.6,
+        opacity: isSelected ? 1 : 0.4,
+        fill: false
+      };
+    }
+
+    return {
+      color: '#dc2626',
+      weight: 2.4,
+      opacity: 0.9,
+      fill: false
+    };
+  }
+
   // Standard or Choropleth district styles
   function getDistrictStyle(feature) {
     const distName = resolveDistrictName(feature.properties);
@@ -614,10 +642,10 @@ export default function App() {
 
     return {
       color: isSelected ? '#dc2626' : '#16a34a',
-      weight: isSelected ? 2.5 : 1.2,
-      opacity: isSelected ? 0.95 : 0.65,
+      weight: isSelected ? 2.2 : 0.9,
+      opacity: isSelected ? 0.95 : 0.55,
       fillColor: isSelected ? '#dc2626' : '#16a34a',
-      fillOpacity: isSelected ? 0.12 : 0.02
+      fillOpacity: isSelected ? 0.12 : 0.01
     };
   }
 
@@ -1459,6 +1487,16 @@ export default function App() {
               onEachFeature={onEachDistrict}
               ref={districtLayerRef}
               key={`districts-${showDensityChoropleth ? 'density' : 'normal'}-${selectedEntity?.name || 'none'}`}
+            />
+          )}
+
+          {/* Province boundaries: Red lines for provinces only (no fill) */}
+          {provinceGeoJson && (
+            <GeoJSON
+              data={provinceGeoJson}
+              style={getProvinceBorderStyle}
+              interactive={false}
+              key={`provinces-border-${selectedProvince || 'all'}`}
             />
           )}
 
