@@ -116,11 +116,15 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
-// Basemap configurations
+// Basemap configurations with API key support
+// CARTO requires a free API key since Aug 2026: https://carto.com/basemaps/apikey
+const CARTO_API_KEY = import.meta.env.VITE_CARTO_API_KEY || import.meta.env.VITE_MAP_API_KEY || '';
+const cartoKeySuffix = CARTO_API_KEY ? `?key=${CARTO_API_KEY}` : '';
+
 const BASEMAPS = {
   voyager: {
     name: 'CartoDB Voyager (Street)',
-    url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+    url: `https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png${cartoKeySuffix}`,
     attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; OpenStreetMap contributors',
     maxZoom: 19
   },
@@ -138,7 +142,7 @@ const BASEMAPS = {
   },
   dark: {
     name: 'CartoDB Dark Matter',
-    url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    url: `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png${cartoKeySuffix}`,
     attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; OpenStreetMap contributors',
     maxZoom: 19
   },
@@ -404,7 +408,7 @@ export default function App() {
   const [selectedDistrictFilter, setSelectedDistrictFilter] = useState(null);
 
   // Map Basemap & Thematic Layers
-  const [currentBasemap, setCurrentBasemap] = useState('voyager');
+  const [currentBasemap, setCurrentBasemap] = useState(CARTO_API_KEY ? 'voyager' : 'osm');
   const [showDensityChoropleth, setShowDensityChoropleth] = useState(false);
   const [shadeOutsideNepal, setShadeOutsideNepal] = useState(true); // Default: Focus Nepal with world shaded grey
 
